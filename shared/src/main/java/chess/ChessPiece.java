@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -10,8 +11,19 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
+    private PieceType type;
+    private ChessGame.TeamColor pieceColor;
+    private PieceMovesCalculator movesCalculator;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        // todo make a switch with the type and make a piecemovescalculator object
+        this.pieceColor = pieceColor;
+        this.type = type;
+        this.movesCalculator = switch (type) {
+            case BISHOP -> new BishopMovesCalculator();
+            case null, default -> null; // todo should be null?
+        };
+
     }
 
     /**
@@ -26,18 +38,32 @@ public class ChessPiece {
         PAWN
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return type == that.type && pieceColor == that.pieceColor && Objects.equals(movesCalculator, that.movesCalculator);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, pieceColor, movesCalculator);
+    }
+
     /**
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return this.pieceColor;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return this.type;
     }
 
     /**
@@ -51,6 +77,6 @@ public class ChessPiece {
         // TODO change array to actually return the moves
         // TODO: implement to_string functions to make it better.
         // TODO: can move on from here.
-        return new ArrayList<>();
+        return this.movesCalculator.pieceMoves(board, myPosition);
     }
 }
