@@ -21,6 +21,7 @@ public class ChessPiece {
         this.type = type;
         this.movesCalculator = switch (type) {
             case BISHOP -> new BishopMovesCalculator();
+            case ROOK -> new RookMovesCalculator();
             case null, default -> null; // todo should be null?
         };
 
