@@ -24,6 +24,7 @@ public class ChessPiece {
             case ROOK -> new RookMovesCalculator();
             case QUEEN -> new QueenMovesCalculator();
             case KNIGHT -> new KnightMovesCalculator();
+            case PAWN -> new PawnMovesCalculator();
             case null, default -> null; // todo should be null?
         };
 
