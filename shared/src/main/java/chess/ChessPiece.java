@@ -23,6 +23,7 @@ public class ChessPiece {
             case BISHOP -> new BishopMovesCalculator();
             case ROOK -> new RookMovesCalculator();
             case QUEEN -> new QueenMovesCalculator();
+            case KNIGHT -> new KnightMovesCalculator();
             case null, default -> null; // todo should be null?
         };
 
