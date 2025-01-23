@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -41,7 +43,47 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        /**
+         * setup white side pawns
+         */
+        ChessGame.TeamColor teamColor = ChessGame.TeamColor.WHITE;
+
+        ChessPiece.PieceType[] pieceOrder = new ChessPiece.PieceType[] {ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.KING, ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK};
+        int curRow = 1;
+
+        for (int curCol = 1; curCol <= 8; curCol++) {
+            ChessPosition curPosition = new ChessPosition(curRow, curCol);
+            ChessPiece newPiece = new ChessPiece(teamColor, pieceOrder[curCol - 1]);
+            this.addPiece(curPosition, newPiece);
+        }
+
+        curRow = 2;
+
+        for (int curCol = 1; curCol <= 8; curCol++) {
+            ChessPosition curPosition = new ChessPosition(curRow, curCol);
+            ChessPiece newPiece = new ChessPiece(teamColor, ChessPiece.PieceType.PAWN);
+            this.addPiece(curPosition, newPiece);
+        }
+
+        teamColor = ChessGame.TeamColor.BLACK;
+
+        curRow = 8;
+
+        for (int curCol = 1; curCol <= 8; curCol++) {
+            ChessPosition curPosition = new ChessPosition(curRow, curCol);
+            ChessPiece newPiece = new ChessPiece(teamColor, pieceOrder[curCol - 1]);
+            this.addPiece(curPosition, newPiece);
+        }
+
+        curRow = 7;
+
+        for (int curCol = 1; curCol <= 8; curCol++) {
+            ChessPosition curPosition = new ChessPosition(curRow, curCol);
+            ChessPiece newPiece = new ChessPiece(teamColor, ChessPiece.PieceType.PAWN);
+            this.addPiece(curPosition, newPiece);
+        }
     }
 
     @Override
@@ -51,6 +93,13 @@ public class ChessBoard {
         }
         ChessBoard that = (ChessBoard) o;
         return Objects.deepEquals(squares, that.squares);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "squares=" + Arrays.deepToString(squares) +
+                '}';
     }
 
     @Override

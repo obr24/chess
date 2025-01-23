@@ -49,7 +49,8 @@ public class ChessPiece {
             return false;
         }
         ChessPiece that = (ChessPiece) o;
-        return type == that.type && pieceColor == that.pieceColor && Objects.equals(movesCalculator, that.movesCalculator);
+        //return type == that.type && pieceColor == that.pieceColor && Objects.equals(movesCalculator, that.movesCalculator);
+        return type == that.type && pieceColor == that.pieceColor;
     }
 
     @Override
@@ -83,5 +84,13 @@ public class ChessPiece {
         // TODO: implement to_string functions to make it better.
         // TODO: can move on from here.
         return this.movesCalculator.pieceMoves(board, myPosition);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                "}\n";
     }
 }
