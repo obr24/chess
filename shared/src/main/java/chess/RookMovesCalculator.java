@@ -1,79 +1,60 @@
 package chess;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 public class RookMovesCalculator implements PieceMovesCalculator {
-    private boolean validMove(String direction, int row, int col) {
-       switch (direction) {
-           case "up":
-               if (row >= 8) {
-                   return false;
-               }
-               break;
-           case "down":
-               if (row <= 1) {
-                   return false;
-               }
-               break;
-           case "right":
-               if (col >= 8) {
-                   return false;
-               }
-               break;
-           case "left":
-               if (col <= 1) {
-                   return false;
-               }
-               break;
+    private boolean nextMoveValid(int[] direction, ChessPosition curPosition) {
+        int curRow = curPosition.getRow();
+        int curCol = curPosition.getColumn();
+
+        if (curRow >= 8 && direction[0] == 1) {
+            return false;
+        } else if (curRow <= 1 && direction[0] == -1) {
+            return false;
+        } else if (curCol >= 8 && direction[1] == 1) {
+            return false;
+        } else if (curCol <= 1 && direction[1] == -1) {
+            return false;
         }
-    return true;
+        return true;
     }
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
-        ChessPiece currPiece = board.getPiece(position);
 
-        Collection<ChessMove> chessMoves = new ArrayList<>();
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> rookMoves = new ArrayList<>();
+        ChessPiece curPiece = board.getPiece(myPosition);
 
-        List<String> directions = Arrays.asList("up", "down", "right", "left");
+        int curRow = myPosition.getRow();
+        int curCol = myPosition.getColumn();
 
-        for (String direction : directions) {
-            int col = position.getColumn();
-            int row = position.getRow();
+        ChessPosition newPosition = myPosition;
+        ChessPiece newPositionPiece = null; // TODO: can be null?
+        ChessMove newMove = null; // TODO: can be null?
 
-            //while (col < 8 && col > 1 && row < 8 && row > 1) { // replace with validMoves function call
-            while (validMove(direction, row, col)) { // replace with validMoves function call
-                switch (direction) {
-                    case "up":
-                        row++;
-                        break;
-                    case "down":
-                        row--;
-                        break;
-                    case "right":
-                        col++;
-                        break;
-                    case "left":
-                        col--;
-                        break;
-                }
-                ChessPosition newPosition = new ChessPosition(row, col);
-                ChessPiece newPositionPiece = board.getPiece(newPosition);
+        int[][] possibleDirections = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
 
-                ChessMove newChessMove = new ChessMove(position, newPosition, null);
+        for (int[] direction : possibleDirections) {
+            int newRow = curRow;
+            int newCol = curCol;
+            newPosition = new ChessPosition(curRow, curCol);
+
+            while (nextMoveValid(direction, newPosition)) {
+                newRow += direction[0];
+                newCol += direction[1];
+                newPosition = new ChessPosition(newRow, newCol);
+                newPositionPiece = board.getPiece(newPosition);
+                newMove = new ChessMove(myPosition, newPosition, null);
 
                 if (newPositionPiece == null) {
-                    chessMoves.add(newChessMove);
-                } else if (currPiece.getTeamColor() != newPositionPiece.getTeamColor()) {
-                    chessMoves.add(newChessMove);
+                    rookMoves.add(newMove);
+                } else if (newPositionPiece.getTeamColor() != curPiece.getTeamColor()) {
+                    rookMoves.add(newMove);
                     break;
-                } else if (currPiece.getTeamColor() == newPositionPiece.getTeamColor()) { // TODO: change to .equals()
+                } else if (newPositionPiece.getTeamColor() == curPiece.getTeamColor()) {
                     break;
                 }
             }
         }
-        return chessMoves;
+        return rookMoves;
     }
 }
