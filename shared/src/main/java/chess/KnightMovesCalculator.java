@@ -4,21 +4,36 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class KnightMovesCalculator implements PieceMovesCalculator {
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> knightMoves = new ArrayList<>();
-        for (int cur_row_direction : new int[]{-1, 1}) {
-            for (int cur_col_direction : new int[]{-1, 1}) {
-                for (int[] multiplierDirection : new int[][]{{1, 2}, {2, 1}}) {
-                    int new_row = position.getRow() + multiplierDirection[0] * cur_row_direction;
-                    int new_col = position.getColumn() + multiplierDirection[1] * cur_col_direction;
-                    if (new_row >= 1 && new_row <= 8 && new_col >= 1 && new_col <= 8) {
-                        ChessPosition newPosition = new ChessPosition(new_row, new_col);
-                        ChessPiece currPiece = board.getPiece(position);
-                        ChessPiece pieceInNewPosition = board.getPiece(newPosition);
-                        if ((pieceInNewPosition == null) || (pieceInNewPosition.getTeamColor() != currPiece.getTeamColor())) {
-                            knightMoves.add(new ChessMove(position, newPosition, null));
-                        }
-                    }
+
+        ChessPiece curPiece = board.getPiece(myPosition);
+
+        int curRow = myPosition.getRow();
+        int curCol = myPosition.getColumn();
+
+        ChessPosition newPosition = myPosition;
+        ChessPiece newPositionPiece = null; // TODO: can be null?
+        ChessMove newMove = null; // TODO: can be null?
+
+        int[][] possibleDirections = new int[][] {{-1, -2}, {-1, 2}, {-2, -1}, {-2, 1},
+                {1, -2}, {1, 2}, {2, -1}, {2, 1}};
+
+        for (int[] direction : possibleDirections) {
+            int newRow = curRow + direction[0];
+            int newCol = curCol + direction[1];
+
+            if (newRow <= 8 && newRow >= 1 && newCol <= 8 && newCol >= 1) {
+                newPosition = new ChessPosition(newRow, newCol);
+
+                newPositionPiece = board.getPiece(newPosition);
+
+                if (newPositionPiece == null) {
+                    newMove = new ChessMove(myPosition, newPosition, null);
+                    knightMoves.add(newMove);
+                } else if (newPositionPiece.getTeamColor() != curPiece.getTeamColor()) {
+                    newMove = new ChessMove(myPosition, newPosition, null);
+                    knightMoves.add(newMove);
                 }
             }
         }
