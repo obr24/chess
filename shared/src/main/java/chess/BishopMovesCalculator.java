@@ -2,62 +2,61 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.NoSuchElementException;
 
 public class BishopMovesCalculator implements PieceMovesCalculator {
-    private boolean validMove(int col_inc_forward, int row_inc_up, int col, int row) {
-        if (col_inc_forward == 1 && col >= 8) {
+    private boolean nextMoveValid(int[] direction, ChessPosition curPosition) {
+        int curRow = curPosition.getRow();
+        int curCol = curPosition.getColumn();
+
+        if (curRow >= 8 && direction[0] == 1) {
             return false;
-        } else if (col_inc_forward != 1 && col <= 1) {
+        } else if (curRow <= 1 && direction[0] == -1) {
             return false;
-        }
-        if (row_inc_up == 1 && row >= 8) {
+        } else if (curCol >= 8 && direction[1] == 1) {
             return false;
-        } else if (row_inc_up != 1 && row <= 1) {
+        } else if (curCol <= 1 && direction[1] == -1) {
             return false;
         }
         return true;
     }
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
-        Collection<ChessMove> chess_moves = new ArrayList<>();
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> bishopMoves = new ArrayList<>();
+        ChessPiece curPiece = board.getPiece(myPosition);
 
-        int col_inc_forward = 0;
-        int row_inc_up = 0;
+        int curRow = myPosition.getRow();
+        int curCol = myPosition.getColumn();
 
-        ChessPiece currPiece = board.getPiece(position);
+        ChessPosition newPosition = myPosition;
+        ChessPiece newPositionPiece = null; // TODO: can be null?
+        ChessMove newMove = null; // TODO: can be null?
 
-        for (col_inc_forward = 0; col_inc_forward <= 1; col_inc_forward++) {
-            for (row_inc_up = 0; row_inc_up <= 1; row_inc_up++) {
-                int col = position.getColumn();
-                int row = position.getRow();
+        int[][] possibleDirections = new int[][] {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
 
-                //while (col < 8 && col > 1 && row < 8 && row > 1) {
-                while (validMove(col_inc_forward, row_inc_up, col, row)) {
-                    if (col_inc_forward == 1) { // TODO: turn this whole if else into ternary
-                        col++;
-                    } else {
-                        col--;
-                    }
-                    if (row_inc_up == 1) {
-                        row++;
-                    } else {
-                        row--;
-                    }
-                    ChessPosition newPosition = new ChessPosition(row, col);
-                    ChessPiece newPositionPiece = board.getPiece(newPosition);
+        for (int[] direction : possibleDirections) {
+            int newRow = curRow;
+            int newCol = curCol;
+            newPosition = new ChessPosition(curRow, curCol);
 
-                    ChessMove newChessMove = new ChessMove(position, newPosition, null);
-                    if (newPositionPiece == null) {
-                        chess_moves.add(newChessMove);
-                    } else if (currPiece.getTeamColor() != newPositionPiece.getTeamColor()) {
-                        chess_moves.add(newChessMove);
-                        break;
-                    } else if (currPiece.getTeamColor() == newPositionPiece.getTeamColor()) { // TODO: change to .equals()
-                        break;
-                    }
+            while (nextMoveValid(direction, newPosition)) {
+                newRow += direction[0];
+                newCol += direction[1];
+                newPosition = new ChessPosition(newRow, newCol);
+                newPositionPiece = board.getPiece(newPosition);
+                newMove = new ChessMove(myPosition, newPosition, null);
+
+                if (newPositionPiece == null) {
+                    bishopMoves.add(newMove);
+                } else if (newPositionPiece.getTeamColor() != curPiece.getTeamColor()) {
+                    bishopMoves.add(newMove);
+                    break;
+                } else if (newPositionPiece.getTeamColor() == curPiece.getTeamColor()) {
+                    break;
                 }
+
+
+
             }
         }
-        return chess_moves;
+        return bishopMoves;
     }
 }
