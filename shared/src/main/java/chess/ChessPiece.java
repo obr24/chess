@@ -31,6 +31,10 @@ public class ChessPiece {
 
     }
 
+    public ChessPiece DeepCopy() {
+        ChessPiece newPiece = new ChessPiece(this.getTeamColor(), this.getPieceType());
+        return newPiece;
+    }
     /**
      * The various different chess piece options
      */
