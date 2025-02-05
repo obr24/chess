@@ -152,7 +152,6 @@ public class ChessGame {
     private boolean validMove(ChessMove move) {
         ChessPosition startPosition = move.getStartPosition();
         ChessPiece curPiece = board.getPiece(startPosition);
-        TeamColor curColor = curPiece.getTeamColor();
         return validMoves(startPosition).contains(move);
     }
 
