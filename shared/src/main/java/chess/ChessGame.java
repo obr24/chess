@@ -197,7 +197,7 @@ public class ChessGame {
         TeamColor opposingColor = switch (teamColor) { case BLACK -> TeamColor.WHITE; case WHITE -> TeamColor.BLACK; };
         Collection<ChessPosition> opposingEndPositions = getTeamEndPositions(opposingColor);
         return opposingEndPositions.contains(kingPosition);
-    } // TODO: double check if its actually working
+    }
 
     /**
      * Determines if the given team is in checkmate
