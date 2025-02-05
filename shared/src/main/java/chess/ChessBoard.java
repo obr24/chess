@@ -14,6 +14,20 @@ public class ChessBoard {
         
     }
 
+    public ChessBoard DeepCopy() {
+        ChessBoard newBoard = new ChessBoard();
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition curPosition = new ChessPosition(row, col);
+                ChessPiece oldPiece = this.getPiece(curPosition);
+                if (oldPiece != null) {
+                    ChessPiece copiedPiece = oldPiece.DeepCopy();
+                    newBoard.addPiece(curPosition, copiedPiece);
+                }
+            }
+        }
+        return newBoard;
+    } // TODO need to do deep copy of board and pieces
     /**
      * Adds a chess piece to the chessboard
      *
@@ -48,6 +62,20 @@ public class ChessBoard {
             }
         }
         return teamPieces;
+    }
+
+    public ChessPosition getKingPosition(ChessGame.TeamColor color) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition curPosition = new ChessPosition(row, col);
+                ChessPiece curPiece = this.getPiece(curPosition);
+                if (curPiece != null && curPiece.getTeamColor().equals(color) &&
+                        curPiece.getPieceType() == ChessPiece.PieceType.KING) {
+                    return curPosition;
+                }
+            }
+        }
+        return null; // if ur here ur board is messed up
     }
     /**
      * Sets the board to the default starting board
