@@ -73,14 +73,12 @@ public class ChessGame {
     private boolean putsIntoCheck(ChessMove move, TeamColor curColor) {
         ChessGame tempGame = this.DeepCopy();
         doMove(tempGame, move);
-        // todo continue here!!!!
         return tempGame.isInCheck(curColor);
     }
 
     private boolean blocksCheck(ChessMove move, TeamColor curColor) {
         ChessGame tempGame = this.DeepCopy();
         doMove(tempGame, move);
-        // todo continue here!!!!
         return !tempGame.isInCheck(curColor);
     }
 
@@ -136,12 +134,14 @@ public class ChessGame {
             }
             moves.removeAll(movesToRemove);
         }
-        switch (curPiece.getPieceType()) {
-            case KING:
+        if (curPiece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (isInCheck(curPieceColor)) {
+                // todo start here!!!
+
+            } else {
                 Collection<ChessMove> opposingTeamMoves = getTeamMoves(opposingColor);
                 opposingTeamMoves.forEach(opposingMove -> moves.removeIf(curMove -> curMove.endPositionEquals(opposingMove)));
-                break;
-            case null, default:
+            }
         }
         return moves;
     }
