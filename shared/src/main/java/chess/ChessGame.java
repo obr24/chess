@@ -102,6 +102,15 @@ public class ChessGame {
         return this.getTeamTurn() == color;
     }
 
+    private boolean existsMoveToBlockCheck(TeamColor color) {
+        var teamMoves = getTeamMoves(color);
+        for (var move : teamMoves) {
+            if (blocksCheck(move, color)) {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -210,7 +219,8 @@ public class ChessGame {
 //        TeamColor opposingColor = switch (teamColor) { case BLACK -> TeamColor.WHITE; case WHITE -> TeamColor.BLACK; };
 //        Collection<ChessPosition> opposingEndPositions = getTeamEndPositions(opposingColor);
 
-        return isInCheck(teamColor) && (this.validMoves(kingPosition).isEmpty());
+        return isInCheck(teamColor) && (this.validMoves(kingPosition).isEmpty())
+                && !existsMoveToBlockCheck(teamColor);
     }
 
     /**
