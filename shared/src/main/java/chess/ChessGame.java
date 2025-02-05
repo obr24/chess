@@ -54,7 +54,6 @@ public class ChessGame {
     private Collection<ChessMove> getTeamMoves(TeamColor teamColor) {
         HashMap<ChessPiece, ChessPosition> opposingTeamPieces = board.getTeamPieces(teamColor);
         Collection<ChessMove> opposingTeamMoves = new ArrayList<>();
-        Collection<ChessPosition> opposingTeamEndPositions = new ArrayList<>();
 
         opposingTeamPieces.forEach(
                 (piece, position)
