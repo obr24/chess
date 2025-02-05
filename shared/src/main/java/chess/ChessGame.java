@@ -207,12 +207,6 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         ChessPosition kingPosition = board.getKingPosition(teamColor);
-//        ChessPiece kingPiece = board.getPiece(kingPosition);
-//        Collection<ChessMove> kingMoves = kingPiece.pieceMoves(board, kingPosition);
-//        Collection<ChessPosition> kingEndPositions = new ArrayList<>();
-//        kingMoves.forEach(move -> kingEndPositions.add(move.getEndPosition()));
-//        TeamColor opposingColor = switch (teamColor) { case BLACK -> TeamColor.WHITE; case WHITE -> TeamColor.BLACK; };
-//        Collection<ChessPosition> opposingEndPositions = getTeamEndPositions(opposingColor);
 
         return isInCheck(teamColor) && (this.validMoves(kingPosition).isEmpty())
                 && !existsMoveToBlockCheck(teamColor);
