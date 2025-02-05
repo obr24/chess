@@ -86,7 +86,7 @@ public class ChessGame {
         ChessPosition startPosition = move.getStartPosition();
         TeamColor curColor = board.getPiece(startPosition).getTeamColor();
         ChessPosition endPosition = move.getEndPosition();
-        ChessPiece pieceToMove = null;
+        ChessPiece pieceToMove;
         if (move.getPromotionPiece() == null) {
             pieceToMove = curBoard.getPiece(startPosition);
         } else {
