@@ -144,13 +144,8 @@ public class ChessGame {
             moves.removeAll(movesToRemove);
         }
         if (curPiece.getPieceType() == ChessPiece.PieceType.KING) {
-            if (isInCheck(curPieceColor)) {
-                // todo start here!!!
-
-            } else {
-                Collection<ChessMove> opposingTeamMoves = getTeamMoves(opposingColor);
-                opposingTeamMoves.forEach(opposingMove -> moves.removeIf(curMove -> curMove.endPositionEquals(opposingMove)));
-            }
+            Collection<ChessMove> opposingTeamMoves = getTeamMoves(opposingColor);
+            opposingTeamMoves.forEach(opposingMove -> moves.removeIf(curMove -> curMove.endPositionEquals(opposingMove)));
         }
         return moves;
     }
