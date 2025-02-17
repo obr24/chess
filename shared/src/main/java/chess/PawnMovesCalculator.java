@@ -23,7 +23,7 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
         ChessPiece aheadPiece = board.getPiece(aheadPiecePosition);
 
         ChessPosition aheadLeftPiecePosition = null;
-        ChessPiece aheadLeftPiece = null; // TODO check if at left side
+        ChessPiece aheadLeftPiece = null;
 
         if (col > 1) {
             if (color == ChessGame.TeamColor.WHITE) {
@@ -32,11 +32,11 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
                 aheadLeftPiecePosition = new ChessPosition(row - 1, col - 1);
             }
             assert aheadLeftPiecePosition != null;
-            aheadLeftPiece = board.getPiece(aheadLeftPiecePosition); // TODO check if at left side
+            aheadLeftPiece = board.getPiece(aheadLeftPiecePosition);
         }
 
         ChessPosition aheadRightPiecePosition = null;
-        ChessPiece aheadRightPiece = null; // TODO check if at right side
+        ChessPiece aheadRightPiece = null;
 
         if (col < 8) {
             if (color == ChessGame.TeamColor.WHITE) {
@@ -44,7 +44,7 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
             } else {
                 aheadRightPiecePosition = new ChessPosition(row - 1, col + 1);
             }
-            aheadRightPiece = board.getPiece(aheadRightPiecePosition); // TODO check if at right side
+            aheadRightPiece = board.getPiece(aheadRightPiecePosition);
         }
 
         if ((color == ChessGame.TeamColor.WHITE && row == 2) || (color == ChessGame.TeamColor.BLACK && row == 7)) {     // If in starting position

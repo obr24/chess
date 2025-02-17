@@ -15,7 +15,6 @@ public class ChessPiece {
     private PieceMovesCalculator movesCalculator;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        // todo make a switch with the type and make a piecemovescalculator object
         this.pieceColor = pieceColor;
         this.type = type;
         this.movesCalculator = switch (type) {
@@ -25,7 +24,7 @@ public class ChessPiece {
             case KNIGHT -> new KnightMovesCalculator();
             case PAWN -> new PawnMovesCalculator();
             case KING -> new KingMovesCalculator();
-            case null, default -> null; // todo should be null?
+            case null, default -> null;
         };
 
     }

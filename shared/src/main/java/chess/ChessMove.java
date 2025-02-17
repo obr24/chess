@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ChessMove {
     private ChessPosition startPosition;
     private ChessPosition endPosition;
-    private ChessPiece.PieceType promotionPiece = null;     // TODO: should this be here or in constructor?
+    private ChessPiece.PieceType promotionPiece = null;
 
     @Override
     public String toString() {

@@ -28,8 +28,8 @@ public class RookMovesCalculator implements PieceMovesCalculator {
         int curCol = myPosition.getColumn();
 
         ChessPosition newPosition = myPosition;
-        ChessPiece newPositionPiece = null; // TODO: can be null?
-        ChessMove newMove = null; // TODO: can be null?
+        ChessPiece newPositionPiece = null;
+        ChessMove newMove = null;
 
         int[][] possibleDirections = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
 

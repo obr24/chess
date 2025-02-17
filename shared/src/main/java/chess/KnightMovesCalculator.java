@@ -13,8 +13,8 @@ public class KnightMovesCalculator implements PieceMovesCalculator {
         int curCol = myPosition.getColumn();
 
         ChessPosition newPosition = myPosition;
-        ChessPiece newPositionPiece = null; // TODO: can be null?
-        ChessMove newMove = null; // TODO: can be null?
+        ChessPiece newPositionPiece = null;
+        ChessMove newMove = null;
 
         int[][] possibleDirections = new int[][] {{-1, -2}, {-1, 2}, {-2, -1}, {-2, 1},
                 {1, -2}, {1, 2}, {2, -1}, {2, 1}};

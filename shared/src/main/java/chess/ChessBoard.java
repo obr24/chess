@@ -27,7 +27,7 @@ public class ChessBoard {
             }
         }
         return newBoard;
-    } // TODO need to do deep copy of board and pieces
+    }
     /**
      * Adds a chess piece to the chessboard
      *
