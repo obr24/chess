@@ -20,7 +20,7 @@ public class ChessGame {
         teamTurn = TeamColor.WHITE;
     }
 
-    public ChessGame DeepCopy() {
+    public ChessGame deepCopy() {
         ChessGame newGame = new ChessGame();
         newGame.setBoard(this.board.DeepCopy());
         newGame.setTeamTurn(this.getTeamTurn());
@@ -70,13 +70,13 @@ public class ChessGame {
     }
 
     private boolean putsIntoCheck(ChessMove move, TeamColor curColor) {
-        ChessGame tempGame = this.DeepCopy();
+        ChessGame tempGame = this.deepCopy();
         doMove(tempGame, move);
         return tempGame.isInCheck(curColor);
     }
 
     private boolean blocksCheck(ChessMove move, TeamColor curColor) {
-        ChessGame tempGame = this.DeepCopy();
+        ChessGame tempGame = this.deepCopy();
         doMove(tempGame, move);
         return !tempGame.isInCheck(curColor);
     }
