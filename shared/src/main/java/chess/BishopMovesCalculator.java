@@ -3,21 +3,11 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static chess.RookMovesCalculator.nextMoveValidRookBishop;
+
 public class BishopMovesCalculator implements PieceMovesCalculator {
     private boolean nextMoveValid(int[] direction, ChessPosition curPosition) {
-        int curRow = curPosition.getRow();
-        int curCol = curPosition.getColumn();
-
-        if (curRow >= 8 && direction[0] == 1) {
-            return false;
-        } else if (curRow <= 1 && direction[0] == -1) {
-            return false;
-        } else if (curCol >= 8 && direction[1] == 1) {
-            return false;
-        } else if (curCol <= 1 && direction[1] == -1) {
-            return false;
-        }
-        return true;
+        return nextMoveValidRookBishop(direction, curPosition);
     }
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> bishopMoves = new ArrayList<>();

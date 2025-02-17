@@ -5,6 +5,10 @@ import java.util.Collection;
 
 public class RookMovesCalculator implements PieceMovesCalculator {
     private boolean nextMoveValid(int[] direction, ChessPosition curPosition) {
+        return nextMoveValidRookBishop(direction, curPosition);
+    }
+
+    static boolean nextMoveValidRookBishop(int[] direction, ChessPosition curPosition) {
         int curRow = curPosition.getRow();
         int curCol = curPosition.getColumn();
 
