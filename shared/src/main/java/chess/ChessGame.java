@@ -97,10 +97,6 @@ public class ChessGame {
         curBoard.addPiece(endPosition, pieceToMove);
     }
 
-    private boolean isTeamTurn(TeamColor color) {
-        return this.getTeamTurn() == color;
-    }
-
     private boolean existsMoveToBlockCheck(TeamColor color) {
         var teamMoves = getTeamMoves(color);
         for (var move : teamMoves) {
