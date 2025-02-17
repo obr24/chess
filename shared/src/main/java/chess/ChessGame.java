@@ -22,7 +22,7 @@ public class ChessGame {
 
     public ChessGame deepCopy() {
         ChessGame newGame = new ChessGame();
-        newGame.setBoard(this.board.DeepCopy());
+        newGame.setBoard(this.board.deepCopy());
         newGame.setTeamTurn(this.getTeamTurn());
         return newGame;
     }
