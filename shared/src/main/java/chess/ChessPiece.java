@@ -1,6 +1,5 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -31,7 +30,7 @@ public class ChessPiece {
 
     }
 
-    public ChessPiece DeepCopy() {
+    public ChessPiece deepCopy() {
         ChessPiece newPiece = new ChessPiece(this.getTeamColor(), this.getPieceType());
         return newPiece;
     }

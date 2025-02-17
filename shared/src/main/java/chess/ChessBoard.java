@@ -21,7 +21,7 @@ public class ChessBoard {
                 ChessPosition curPosition = new ChessPosition(row, col);
                 ChessPiece oldPiece = this.getPiece(curPosition);
                 if (oldPiece != null) {
-                    ChessPiece copiedPiece = oldPiece.DeepCopy();
+                    ChessPiece copiedPiece = oldPiece.deepCopy();
                     newBoard.addPiece(curPosition, copiedPiece);
                 }
             }
