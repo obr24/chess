@@ -78,8 +78,8 @@ public class Server {
 
     private Object createGame(Request request, Response response) throws ServiceException {
         String authToken = request.headers("authorization");
-        String gameName = request.body();
-        var createResult = service.GameService.createGame(memoryGamesDAO, memoryAuthDAO, authToken, gameName);
+        String gameName = new Gson().fromJson(request.body(), CreateRequest.class).gameName();
+        CreateResult createResult = service.GameService.createGame(memoryGamesDAO, memoryAuthDAO, authToken, gameName);
         return new Gson().toJson(createResult);
     }
 

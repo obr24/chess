@@ -3,6 +3,7 @@ package service;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GamesDAO;
+import model.RequestsAndResults;
 
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ public class GameService {
             return false;
         }
     }
-    public static int createGame(GamesDAO gamesDAO, AuthDAO authDAO, String authToken, String gameName) throws ServiceException{
+    public static RequestsAndResults.CreateResult createGame(GamesDAO gamesDAO, AuthDAO authDAO, String authToken, String gameName) throws ServiceException{
         if (!validAuthToken(authDAO, authToken)) {
             throw new ServiceException("Error: unauthorized", 401);
         }
@@ -24,7 +25,7 @@ public class GameService {
             throw new ServiceException("Error: bad request", 400);
         }
         try {
-            return gamesDAO.createGame(gameName).gameID();
+            return new RequestsAndResults.CreateResult(gamesDAO.createGame(gameName).gameID());
         } catch (DataAccessException e) {
             throw new ServiceException(e.getMessage(), 500);
         }
