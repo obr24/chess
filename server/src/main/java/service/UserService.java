@@ -41,7 +41,7 @@ public class UserService {
         }
     }
 
-    private static AuthData CreateAuthDataForUser(AuthDAO authDAO, String username) throws ServiceException {
+    private static AuthData createAuthDataForUser(AuthDAO authDAO, String username) throws ServiceException {
         String newAuthToken = UUID.randomUUID().toString();
         AuthData newAuthData = new AuthData(newAuthToken, username);
         try {
@@ -69,7 +69,7 @@ public class UserService {
             throw new RuntimeException(e); // TODO: return error result
         }
 
-        AuthData newAuthData = CreateAuthDataForUser(authDAO, registerRequest.username());
+        AuthData newAuthData = createAuthDataForUser(authDAO, registerRequest.username());
 
         return new RegisterResult(newAuthData.username(), newAuthData.authToken());
     }
@@ -80,7 +80,7 @@ public class UserService {
 
     public static LoginResult login(UserDAO userDAO, AuthDAO authDAO, LoginRequest loginRequest) throws ServiceException {
         if (userDAO.validUser(loginRequest.username(), loginRequest.password())) {
-            AuthData newAuthToken = CreateAuthDataForUser(authDAO, loginRequest.username());
+            AuthData newAuthToken = createAuthDataForUser(authDAO, loginRequest.username());
             return new LoginResult(loginRequest.username(), newAuthToken.authToken());
         } else {
             throw new ServiceException("Error: unauthorized", 401);
