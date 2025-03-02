@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Collection;
+
 public class RequestsAndResults {
     public record RegisterRequest(String username, String password, String email) {}
     public record RegisterResult(String username, String authToken) {}
@@ -19,4 +21,8 @@ public class RequestsAndResults {
 
     public record CreateRequest(String authToken, String gameName) {}
     public record CreateResult(int gameID) {}
+    public record JoinRequest(String authToken, String playerColor, int gameID) {}
+    public record JoinResult(int gameID) {}
+    public record ListRequest(String authToken) {}
+    public record ListResult(Collection<GameData> games) {}
 }

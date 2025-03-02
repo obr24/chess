@@ -33,9 +33,10 @@ public class UserService {
         return validUsername && validPassword && validEmail;
     }
 
-    public static void Reset(UserDAO userDAO) throws ServiceException {
+    public static void Reset(UserDAO userDAO, AuthDAO authDAO) throws ServiceException {
         try {
             userDAO.reset();
+            authDAO.reset();
         } catch (DataAccessException e) {
             throw new ServiceException(e.getMessage(), 500); // TODO: test to see if works
         }

@@ -27,6 +27,8 @@ public class Server {
         Spark.delete("/db", this::clearDB); // TODO: u still need to add delete AuthDAO and GameDAO!
         Spark.delete("/session", this::logoutUser);
         Spark.post("/game", this::createGame);
+        Spark.put("/game", this::joinGame);
+        Spark.get("/game", this::listGames);
 
 
         Spark.exception(ServiceException.class, (exception, request, response) -> {
@@ -45,13 +47,6 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
-//
-//    private Object addPet(Request req, Response res) throws ResponseException {
-//        var pet = new Gson().fromJson(req.body(), Pet.class);
-//        pet = service.addPet(pet);
-//        webSocketHandler.makeNoise(pet.name(), pet.sound());
-//        return new Gson().toJson(pet);
-//    }
 
     private Object addUser(Request req, Response res) throws ServiceException {
         var registerRequest = new Gson().fromJson(req.body(), RegisterRequest.class);
@@ -60,7 +55,8 @@ public class Server {
     }
 
     private Object clearDB(Request request, Response response) throws ServiceException {
-        service.UserService.Reset(memoryUserDAO);
+        service.UserService.Reset(memoryUserDAO, memoryAuthDAO);
+        service.GameService.reset(memoryGamesDAO);
         return new Gson().toJson(new ClearResult());
     }
 
@@ -83,4 +79,18 @@ public class Server {
         return new Gson().toJson(createResult);
     }
 
+    private Object joinGame(Request request, Response response) throws ServiceException {
+        String authToken = request.headers("authorization");
+        String playerColor = new Gson().fromJson(request.body(), JoinRequest.class).playerColor();
+        int gameID = new Gson().fromJson(request.body(), JoinRequest.class).gameID();
+        JoinResult joinResult = service.GameService.joinGame(memoryUserDAO, memoryGamesDAO, memoryAuthDAO, authToken,
+                                playerColor, gameID);
+        return new Gson().toJson(joinResult);
+    }
+
+    private Object listGames(Request request, Response response) throws ServiceException {
+        String authToken = request.headers("authorization");
+        ListResult listResult = service.GameService.listGames(memoryUserDAO, memoryGamesDAO, memoryAuthDAO, authToken);
+        return new Gson().toJson(listResult);
+    }
 }

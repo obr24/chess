@@ -30,4 +30,9 @@ public class MemoryAuthDAO implements AuthDAO {
     public void removeAuthToken(String authToken) throws DataAccessException {
         auths.remove(getAuth(authToken));
     }
+
+    @Override
+    public void reset() throws DataAccessException {
+        auths.clear();
+    }
 }

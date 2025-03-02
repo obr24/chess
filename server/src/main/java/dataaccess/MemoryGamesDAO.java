@@ -11,6 +11,10 @@ public class MemoryGamesDAO implements GamesDAO {
     private Collection<GameData> games = new ArrayList<>();
     private int incrementor = 1;
 
+    public Collection<GameData> getGames() throws DataAccessException {
+        return games;
+    }
+
     private int getIdAndIncrement() {
         return incrementor++;
     }
@@ -30,7 +34,21 @@ public class MemoryGamesDAO implements GamesDAO {
     }
 
     public void updateGame(ChessGame.TeamColor playerColor, int gameID, String username) throws DataAccessException {
-        throw new DataAccessException("Not implemented!");
+        GameData curGame = getGame(gameID);
+        String whiteUsername = curGame.whiteUsername();
+        String blackUsername = curGame.blackUsername();
+        String gameName = curGame.gameName();
+        ChessGame game = curGame.game();
+
+        if (playerColor == ChessGame.TeamColor.WHITE) {
+            whiteUsername = username;
+        } else if (playerColor == ChessGame.TeamColor.BLACK) {
+            blackUsername = username;
+        } else {
+            throw new DataAccessException("Username didn't match up...");
+        }
+        games.remove(curGame);
+        games.add(new GameData(gameID, whiteUsername, blackUsername, gameName, game));
     }
 
     @Override
