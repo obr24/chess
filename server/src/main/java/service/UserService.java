@@ -83,7 +83,7 @@ public class UserService {
         }
     }
 
-    private static void RemoveAuthToken(AuthDAO authDAO, String authToken) throws ServiceException {
+    private static void removeAuthToken(AuthDAO authDAO, String authToken) throws ServiceException {
         try {
             authDAO.removeAuthToken(authToken);
         }
@@ -93,7 +93,7 @@ public class UserService {
     }
 
     public static LogoutResult logout(UserDAO userDAO, AuthDAO authDAO, LogoutRequest logoutRequest) throws ServiceException {
-        RemoveAuthToken(authDAO, logoutRequest.authToken());
+        removeAuthToken(authDAO, logoutRequest.authToken());
         return new LogoutResult();
     }
 }
