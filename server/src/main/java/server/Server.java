@@ -2,13 +2,9 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
-import model.RequestsAndResults;
 import model.RequestsAndResults.*;
 import service.ServiceException;
-import service.UserService;
 import spark.*;
-
-import java.lang.module.ResolutionException;
 
 public class Server {
 
@@ -55,7 +51,7 @@ public class Server {
     }
 
     private Object clearDB(Request request, Response response) throws ServiceException {
-        service.UserService.Reset(memoryUserDAO, memoryAuthDAO);
+        service.UserService.reset(memoryUserDAO, memoryAuthDAO);
         service.GameService.reset(memoryGamesDAO);
         return new Gson().toJson(new ClearResult());
     }

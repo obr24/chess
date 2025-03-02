@@ -2,7 +2,6 @@ package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
-import dataaccess.MemoryUserDAO;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.RequestsAndResults.*;
@@ -33,7 +32,7 @@ public class UserService {
         return validUsername && validPassword && validEmail;
     }
 
-    public static void Reset(UserDAO userDAO, AuthDAO authDAO) throws ServiceException {
+    public static void reset(UserDAO userDAO, AuthDAO authDAO) throws ServiceException {
         try {
             userDAO.reset();
             authDAO.reset();
