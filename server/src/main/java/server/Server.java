@@ -20,7 +20,7 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::addUser);
         Spark.post("/session", this::loginUser);
-        Spark.delete("/db", this::clearDB); // TODO: u still need to add delete AuthDAO and GameDAO!
+        Spark.delete("/db", this::clearDB); // to-do: u still need to add delete AuthDAO and GameDAO!
         Spark.delete("/session", this::logoutUser);
         Spark.post("/game", this::createGame);
         Spark.put("/game", this::joinGame);

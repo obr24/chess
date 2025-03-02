@@ -37,7 +37,7 @@ public class UserService {
             userDAO.reset();
             authDAO.reset();
         } catch (DataAccessException e) {
-            throw new ServiceException(e.getMessage(), 500); // TODO: test to see if works
+            throw new ServiceException(e.getMessage(), 500); // TO-DO: test to see if works
         }
     }
 
@@ -66,7 +66,7 @@ public class UserService {
         try {
             userDAO.createUser(newUser);
         } catch (DataAccessException e) {
-            throw new RuntimeException(e); // TODO: return error result
+            throw new RuntimeException(e); // TO-DO: return error result
         }
 
         AuthData newAuthData = createAuthDataForUser(authDAO, registerRequest.username());
@@ -88,7 +88,7 @@ public class UserService {
             authDAO.removeAuthToken(authToken);
         }
         catch(DataAccessException e) {
-            throw new ServiceException("Error: authtoken does not exist", 401); // todo add in error for unauthorized
+            throw new ServiceException("Error: authtoken does not exist", 401); // to-do add in error for unauthorized
         }
     }
 

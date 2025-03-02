@@ -18,7 +18,7 @@ public class MemoryUserDAO implements UserDAO{
 
     public UserData getUser(String username) throws DataAccessException {
         for (UserData user : users) {
-            if (Objects.equals(user.username(), username)) {  // TODO: is this the right way to check if the usernames are the same
+            if (Objects.equals(user.username(), username)) {  // TO-do: is this the right way to check if the usernames are the same
                 return user;
             }
         }
