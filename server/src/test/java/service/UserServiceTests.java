@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.*;
+import model.AuthData;
 import model.RequestsAndResults;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,7 @@ import service.ServiceException;
 
 import java.util.Objects;
 
+import static service.UserService.logout;
 import static service.UserService.register;
 
 public class UserServiceTests {
@@ -31,5 +33,42 @@ public class UserServiceTests {
             Assertions.assertNull(e);
         }
         Assertions.assertNotNull(registerResult);
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("register result")
+    public void registerResultTest() {
+        RequestsAndResults.RegisterResult registerResult = null;
+        try {
+            registerResult = register(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.RegisterRequest("u1", "p1", "e1"));
+        }
+        catch (ServiceException e) {
+            Assertions.assertNull(e);
+        }
+        Assertions.assertNotNull(registerResult);
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("logout")
+    public void logoutTest() {
+        RequestsAndResults.LogoutResult logoutResult = null;
+        try {
+            AuthData authData = new AuthData("test auth token", "u");
+            try {
+                memoryAuthDAO.createAuth(authData);
+            }
+            catch (DataAccessException e) {
+                Assertions.assertNull(e);
+            }
+            logoutResult = logout(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.LogoutRequest("test auth token"));
+        }
+        catch (ServiceException e) {
+            Assertions.assertNull(e);
+        }
+        Assertions.assertNotNull(logoutResult);
     }
 }
