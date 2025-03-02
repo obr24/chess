@@ -28,4 +28,13 @@ public class MemoryUserDAO implements UserDAO{
     public void reset() throws DataAccessException {
         users.clear();
     }
+
+    public boolean validUser(String username, String password) {
+        for (UserData user : users) {
+            if (Objects.equals(user.username(), username) && Objects.equals(user.password(), password)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
