@@ -74,10 +74,6 @@ public class UserService {
         return new RegisterResult(newAuthData.username(), newAuthData.authToken());
     }
 
-    private boolean UserValid(UserDAO userDAO, String username, String password) {
-            return userDAO.validUser(username, password);
-    }
-
     public static LoginResult login(UserDAO userDAO, AuthDAO authDAO, LoginRequest loginRequest) throws ServiceException {
         if (userDAO.validUser(loginRequest.username(), loginRequest.password())) {
             AuthData newAuthToken = createAuthDataForUser(authDAO, loginRequest.username());
