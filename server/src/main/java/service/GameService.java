@@ -22,7 +22,8 @@ public class GameService {
         }
     }
 
-    public static RequestsAndResults.CreateResult createGame(GamesDAO gamesDAO, AuthDAO authDAO, String authToken, String gameName) throws ServiceException{
+    public static RequestsAndResults.CreateResult createGame(GamesDAO gamesDAO, AuthDAO authDAO, String authToken,
+                                                             String gameName) throws ServiceException{
         if (!validAuthToken(authDAO, authToken)) {
             throw new ServiceException("Error: unauthorized", 401);
         }
