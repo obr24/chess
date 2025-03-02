@@ -1,9 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryUserDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import model.RequestsAndResults;
 import model.RequestsAndResults.*;
 import service.ServiceException;
@@ -15,6 +13,8 @@ import java.lang.module.ResolutionException;
 public class Server {
 
     UserDAO memoryUserDAO = new MemoryUserDAO();
+    AuthDAO memoryAuthDAO = new MemoryAuthDAO();
+    GamesDAO memoryGamesDAO = new MemoryGamesDAO();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -25,6 +25,8 @@ public class Server {
         Spark.post("/user", this::addUser);
         Spark.post("/session", this::loginUser);
         Spark.delete("/db", this::clearDB); // TODO: u still need to add delete AuthDAO and GameDAO!
+        Spark.delete("/session", this::logoutUser);
+        Spark.post("/game", this::createGame);
 
 
         Spark.exception(ServiceException.class, (exception, request, response) -> {
@@ -53,7 +55,7 @@ public class Server {
 
     private Object addUser(Request req, Response res) throws ServiceException {
         var registerRequest = new Gson().fromJson(req.body(), RegisterRequest.class);
-        var registerResult = service.UserService.register(memoryUserDAO, registerRequest);
+        var registerResult = service.UserService.register(memoryUserDAO, memoryAuthDAO, registerRequest);
         return new Gson().toJson(registerResult);
     }
 
@@ -64,7 +66,21 @@ public class Server {
 
     private Object loginUser(Request request, Response response) throws ServiceException {
         var loginRequest = new Gson().fromJson(request.body(), LoginRequest.class);
-        var loginResult = service.UserService.login(memoryUserDAO, loginRequest);
+        var loginResult = service.UserService.login(memoryUserDAO, memoryAuthDAO, loginRequest);
         return new Gson().toJson(loginResult);
     }
+
+    private Object logoutUser(Request request, Response response) throws ServiceException {
+        String authToken = request.headers("authorization");
+        var logoutResult = service.UserService.logout(memoryUserDAO, memoryAuthDAO, new LogoutRequest(authToken));
+        return new Gson().toJson(logoutResult);
+    }
+
+    private Object createGame(Request request, Response response) throws ServiceException {
+        String authToken = request.headers("authorization");
+        String gameName = request.body();
+        var createResult = service.GameService.createGame(memoryGamesDAO, memoryAuthDAO, authToken, gameName);
+        return new Gson().toJson(createResult);
+    }
+
 }

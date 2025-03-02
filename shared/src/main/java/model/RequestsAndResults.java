@@ -9,10 +9,14 @@ public class RequestsAndResults {
     public record LoginResult(
             String username,
             String authToken) {}
-    public record LogoutRequest() {}
+    public record LogoutRequest(String authToken) {}
+    public record LogoutResult() {}
 
     public record ClearRequest() {}
     public record ClearResult() {}
 
     public record FailureResponse(int errorCode, String message) {}
+
+    public record CreateRequest(String authToken, String gameName) {}
+    public record CreateResult(int gameID) {}
 }
