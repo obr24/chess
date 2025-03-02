@@ -52,8 +52,8 @@ public class UserService {
         return new AuthData(newAuthToken, username);
     }
 
-    public static RegisterResult register(UserDAO userDAO, AuthDAO authDAO, RegisterRequest registerRequest) throws ServiceException { // TODO: definitely remove? only added static b/c intellij told me to
-        // check if
+    public static RegisterResult register(UserDAO userDAO, AuthDAO authDAO, RegisterRequest registerRequest)
+            throws ServiceException {
         if (!validRequest(registerRequest)) {
             throw new ServiceException("Error: bad request", 400);
         }
