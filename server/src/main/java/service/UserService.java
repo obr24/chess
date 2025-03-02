@@ -6,7 +6,6 @@ import model.AuthData;
 import model.RequestsAndResults.*;
 import model.UserData;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -40,6 +39,11 @@ public class UserService {
         }
     }
 
+    private static AuthData CreateAuthDataForUser(String username) {
+        String newAuthToken = UUID.randomUUID().toString();
+        return new AuthData(newAuthToken, username);
+    }
+
     public static RegisterResult register(UserDAO userDAO, RegisterRequest registerRequest) throws ServiceException { // TODO: definitely remove? only added static b/c intellij told me to
         // check if
         if (!validRequest(registerRequest)) {
@@ -55,17 +59,23 @@ public class UserService {
         } catch (DataAccessException e) {
             throw new RuntimeException(e); // TODO: return error result
         }
+        AuthData newAuthData = CreateAuthDataForUser(registerRequest.username());
 
-        String newAuthToken = UUID.randomUUID().toString();
-
-        AuthData newAuthData = new AuthData(newAuthToken, newUser.username());
-
-        RegisterResult newRegisterResult = new RegisterResult(newAuthData.username(), newAuthData.authToken());
-        return newRegisterResult;
+        return new RegisterResult(newAuthData.username(), newAuthData.authToken());
     }
 
-    public LoginResult login(LoginRequest loginRequest) {
-        return null;
+    private boolean UserValid(UserDAO userDAO, String username, String password) {
+            return userDAO.validUser(username, password);
     }
+
+    public static LoginResult login(UserDAO userDAO, LoginRequest loginRequest) throws ServiceException {
+        if (userDAO.validUser(loginRequest.username(), loginRequest.password())) {
+            AuthData newAuthToken = CreateAuthDataForUser(loginRequest.username());
+            return new LoginResult(loginRequest.username(), newAuthToken.authToken());
+        } else {
+            throw new ServiceException("Error: unauthorized", 401);
+        }
+    }
+
     public void logout(LogoutRequest logoutRequest) {}
 }
