@@ -1,10 +1,31 @@
 package dataaccess;
 
+import model.UserData;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+
 public class MemoryUserDAO implements UserDAO{
-    void createUser(UserData user) throws DataAccessException {
 
+    private Collection<UserData> users = new ArrayList<UserData>();
+
+    public void createUser(UserData userData) throws DataAccessException {
+        UserData newUser = new UserData(userData.username(), userData.password(), userData.email());
+//        throw(new DataAccessException("not implemented"));
+        users.add(newUser);
     }
-    UserData getUser(String username) throws DataAccessException {
 
+    public UserData getUser(String username) throws DataAccessException {
+        for (UserData user : users) {
+            if (Objects.equals(user.username(), username)) {  // TODO: is this the right way to check if the usernames are the same
+                return user;
+            }
+        }
+        throw(new DataAccessException("User does not exist"));
+    }
+
+    public void reset() throws DataAccessException {
+        users.clear();
     }
 }
