@@ -62,4 +62,9 @@ public class Server {
         return new Gson().toJson(new ClearResult());
     }
 
+    private Object loginUser(Request request, Response response) throws ServiceException {
+        var loginRequest = new Gson().fromJson(request.body(), LoginRequest.class);
+        var loginResult = service.UserService.login(memoryUserDAO, loginRequest);
+        return new Gson().toJson(loginResult);
+    }
 }
