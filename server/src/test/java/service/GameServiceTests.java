@@ -30,4 +30,23 @@ public class GameServiceTests {
             Assertions.assertNull(e);
         }
     }
+
+    @Test
+    @Order(2)
+    @DisplayName("createGame- bad request")
+    public void createGameBadTest() {
+        String authToken = null;
+        try {
+            authToken = UserService.register(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.RegisterRequest(
+                            "username", "password", "email")).authToken();
+        } catch (Exception e) {
+            Assertions.assertNull(e);
+        }
+        try {
+            Assertions.assertNull(GameService.createGame(memoryGamesDAO, memoryAuthDAO, "", "gameName"));
+        } catch (ServiceException e) {
+            Assertions.assertNotNull(e);
+        }
+    }
 }
