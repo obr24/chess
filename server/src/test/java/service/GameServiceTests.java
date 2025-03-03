@@ -33,8 +33,8 @@ public class GameServiceTests {
 
     @Test
     @Order(2)
-    @DisplayName("createGame- bad request")
-    public void createGameBadTest() {
+    @DisplayName("createGame- bad auth request")
+    public void createGameBadAuthTest() {
         String authToken = null;
         try {
             authToken = UserService.register(memoryUserDAO, memoryAuthDAO,
@@ -48,5 +48,32 @@ public class GameServiceTests {
         } catch (ServiceException e) {
             Assertions.assertNotNull(e);
         }
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("joinGame- good request")
+    public void createGameGoodTest() {
+        String authToken = null;
+        int gameID = 0;
+        try {
+            authToken = UserService.register(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.RegisterRequest(
+                            "username1", "password1", "email1")).authToken();
+        } catch (Exception e) {
+            Assertions.assertNull(e);
+        }
+        try {
+            gameID = GameService.createGame(memoryGamesDAO, memoryAuthDAO, "", "gameName1").gameID();
+            Assertions.assertNotEquals(0, gameID);
+        } catch (ServiceException e) {
+            Assertions.assertNotNull(e);
+        }
+        try {
+            GameService.joinGame(memoryUserDAO, memoryGamesDAO, memoryAuthDAO, authToken, "WHITE", gameID);
+        } catch (ServiceException e) {
+
+        }
+
     }
 }
