@@ -88,4 +88,16 @@ public class UserServiceTests {
         Assertions.assertNotNull(memoryGamesDAO);
 
     }
+
+    @Test
+    @Order(5)
+    @DisplayName("registerBadRequest")
+    public void registerBadRequest() {
+        try {
+            UserService.register(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.RegisterRequest("", "", ""));
+        } catch (ServiceException e) {
+            Assertions.assertNotNull(e);
+        }
+    }
 }
