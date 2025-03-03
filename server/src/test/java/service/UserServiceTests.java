@@ -100,4 +100,17 @@ public class UserServiceTests {
             Assertions.assertNotNull(e);
         }
     }
+
+    @Test
+    @Order(6)
+    @DisplayName("loginBadRequest")
+    public void loginBadRequest() {
+        try {
+            UserService.login(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.LoginRequest("", ""));
+        }
+        catch(ServiceException e) {
+            Assertions.assertNotNull(e);
+        }
+    }
 }
