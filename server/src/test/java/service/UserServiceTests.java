@@ -71,4 +71,21 @@ public class UserServiceTests {
         }
         Assertions.assertNotNull(logoutResult);
     }
+
+    @Test
+    @Order(4)
+    @DisplayName("reset")
+    public void restTest() {
+        try {
+            memoryAuthDAO.reset();
+            memoryUserDAO.reset();
+            memoryGamesDAO.reset();
+        } catch (DataAccessException e) {
+            Assertions.assertNull(e);
+        }
+        Assertions.assertNotNull(memoryAuthDAO);
+        Assertions.assertNotNull(memoryUserDAO);
+        Assertions.assertNotNull(memoryGamesDAO);
+
+    }
 }
