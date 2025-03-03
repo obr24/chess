@@ -77,16 +77,12 @@ public class UserServiceTests {
     @DisplayName("reset")
     public void restTest() {
         try {
-            memoryAuthDAO.reset();
-            memoryUserDAO.reset();
-            memoryGamesDAO.reset();
-        } catch (DataAccessException e) {
+            UserService.reset(memoryUserDAO, memoryAuthDAO);
+        } catch (ServiceException e) {
             Assertions.assertNull(e);
         }
         Assertions.assertNotNull(memoryAuthDAO);
         Assertions.assertNotNull(memoryUserDAO);
-        Assertions.assertNotNull(memoryGamesDAO);
-
     }
 
     @Test
@@ -113,4 +109,54 @@ public class UserServiceTests {
             Assertions.assertNotNull(e);
         }
     }
+
+    @Test
+    @Order(7)
+    @DisplayName("loginGoodRequest")
+    public void loginGoodRequest() {
+        try {
+            UserService.register(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.RegisterRequest("test1", "test1", "email1"));
+            UserService.login(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.LoginRequest("test1", "test1"));
+        }
+        catch(ServiceException e) {
+            Assertions.assertNull(e);
+        }
+        Assertions.assertNotNull(memoryUserDAO);
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("logoutBadRequest")
+    public void logoutBadRequest() {
+        try {
+            UserService.logout(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.LogoutRequest(""));
+        }
+        catch(ServiceException e) {
+            Assertions.assertNotNull(e);
+        }
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("registerBadRequest - user already exists")
+    public void registerBadRequest2() {
+        try {
+            UserService.register(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.RegisterRequest("randomU", "randomP", "randomE"));
+        } catch (ServiceException e) {
+            Assertions.assertNull(e);
+        }
+        Assertions.assertNotNull(memoryUserDAO);
+        try {
+            UserService.register(memoryUserDAO, memoryAuthDAO,
+                    new RequestsAndResults.RegisterRequest("randomU", "randomP", "randomE"));
+        } catch (ServiceException e) {
+            Assertions.assertNotNull(e);
+        }
+    }
+
+
 }
