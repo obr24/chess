@@ -85,7 +85,7 @@ public class GameServiceTests {
         try {
             authToken = UserService.register(memoryUserDAO, memoryAuthDAO,
                     new RequestsAndResults.RegisterRequest(
-                            "username1", "password1", "email1")).authToken();
+                            "username3", "password3", "email3")).authToken();
         } catch (Exception e) {
             Assertions.assertNull(e);
         }
@@ -112,7 +112,7 @@ public class GameServiceTests {
         try {
             authToken = UserService.register(memoryUserDAO, memoryAuthDAO,
                     new RequestsAndResults.RegisterRequest(
-                            "username1", "password1", "email1")).authToken();
+                            "username2", "password2", "email2")).authToken();
         } catch (Exception e) {
             Assertions.assertNull(e);
             // different part here
