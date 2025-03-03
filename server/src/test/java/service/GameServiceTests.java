@@ -62,17 +62,15 @@ public class GameServiceTests {
                             "username1", "password1", "email1")).authToken();
         } catch (Exception e) {
             Assertions.assertNull(e);
-        }
-        try {
+        } try {
             gameID = GameService.createGame(memoryGamesDAO, memoryAuthDAO, "", "gameName1").gameID();
             Assertions.assertNotEquals(0, gameID);
         } catch (ServiceException e) {
             Assertions.assertNotNull(e);
-        }
-        try {
+        } try {
             GameService.joinGame(memoryUserDAO, memoryGamesDAO, memoryAuthDAO, authToken, "WHITE", gameID);
         } catch (ServiceException e) {
-
+            Assertions.assertNotNull(e);
         }
     }
 
