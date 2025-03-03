@@ -157,6 +157,4 @@ public class UserServiceTests {
             Assertions.assertNotNull(e);
         }
     }
-
-
 }
