@@ -93,7 +93,6 @@ public class GameServiceTests {
             gameID = GameService.createGame(memoryGamesDAO, memoryAuthDAO, "", "gameName1").gameID();
             Assertions.assertNotEquals(0, gameID);
         } catch (ServiceException e) {
-            // this tests if its not null.
             Assertions.assertNotNull(e);
         }
         try {
@@ -115,14 +114,12 @@ public class GameServiceTests {
                             "username2", "password2", "email2")).authToken();
         } catch (Exception e) {
             Assertions.assertNull(e);
-            // different part here
         }
         try {
             gameID = GameService.createGame(memoryGamesDAO, memoryAuthDAO, "", "gameName1").gameID();
             Assertions.assertNotEquals(0, gameID);
         } catch (ServiceException e) {
             Assertions.assertNotNull(e);
-            // very different
         }
         try {
             GameService.joinGame(memoryUserDAO, memoryGamesDAO, memoryAuthDAO, authToken, "WHITE", gameID);
