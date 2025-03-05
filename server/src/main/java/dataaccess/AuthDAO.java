@@ -8,6 +8,3 @@ public interface AuthDAO {
     void removeAuthToken(String authToken) throws DataAccessException;
     void reset() throws DataAccessException;
 }
-
-
-
