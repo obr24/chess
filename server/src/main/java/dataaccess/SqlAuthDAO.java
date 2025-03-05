@@ -111,6 +111,7 @@ public class SqlAuthDAO implements AuthDAO {
 
     @Override
     public void reset() throws DataAccessException {
-
+        String statement = "TRUNCATE auth";
+        DatabaseManager.executeUpdate(statement);
     }
 }
