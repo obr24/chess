@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import model.AuthData;
 import service.ServiceException;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SqlAuthDAO implements AuthDAO {
@@ -72,28 +75,38 @@ public class SqlAuthDAO implements AuthDAO {
         DatabaseManager.executeUpdate(statement, authData.authToken(), authData.username());
     }
 
+    private AuthData readAuthData(ResultSet rs) throws SQLException {
+        String authToken = rs.getString("authToken");
+        String username = rs.getString("username");
+        return new AuthData(authToken, username);
+    }
+
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
-//        try (var conn = DatabaseManager.getConnection()) {
-//            var statement = "SELECT id, json FROM pet WHERE id=?";
-//            try (var ps = conn.prepareStatement(statement)) {
-//                ps.setInt(1, id);
-//                try (var rs = ps.executeQuery()) {
-//                    if (rs.next()) {
-//                        return readPet(rs);
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
-//        }
-//        return null;
+        try (Connection connection = DatabaseManager.getConnection()) {
+            String statement = "SELECT authToken, username FROM auth WHERE authToken=?";
+            try (PreparedStatement ps = connection.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (ResultSet resultSet = ps.executeQuery()) {
+                    if (resultSet.next()) {
+                        return readAuthData(resultSet);
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
         return null;
     }
 
     @Override
     public void removeAuthToken(String authToken) throws DataAccessException {
 
+//        var statement = "DELETE FROM pet WHERE id=?";
+//        executeUpdate(statement, id);
+        String statement = "DELETE FROM auth WHERE authToken=?";
+        DatabaseManager.executeUpdate(statement, authToken);
     }
 
     @Override
