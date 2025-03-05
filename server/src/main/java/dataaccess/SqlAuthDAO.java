@@ -10,27 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SqlAuthDAO implements AuthDAO {
-
-//    public MySqlDataAccess() throws ResponseException {
-//        configureDatabase();
-//    }
-
     public SqlAuthDAO() throws ServiceException {
         configureDatabase();
     }
-
-//    private void configureDatabase() throws ResponseException {
-//        DatabaseManager.createDatabase();
-//        try (var conn = DatabaseManager.getConnection()) {
-//            for (var statement : createStatements) {
-//                try (var preparedStatement = conn.prepareStatement(statement)) {
-//                    preparedStatement.executeUpdate();
-//                }
-//            }
-//        } catch (SQLException ex) {
-//            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
-//        }
-//    }
 
     private final String[] createStatements = {
             """
@@ -67,10 +49,6 @@ public class SqlAuthDAO implements AuthDAO {
 
     @Override
     public void createAuth(AuthData authData) throws DataAccessException {
-//        var statement = "INSERT INTO pet (name, type, json) VALUES (?, ?, ?)";
-//        var json = new Gson().toJson(pet);
-//        var id = executeUpdate(statement, pet.name(), pet.type(), json);
-//        return new Pet(id, pet.name(), pet.type());
         var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
         DatabaseManager.executeUpdate(statement, authData.authToken(), authData.username());
     }
@@ -102,9 +80,6 @@ public class SqlAuthDAO implements AuthDAO {
 
     @Override
     public void removeAuthToken(String authToken) throws DataAccessException {
-
-//        var statement = "DELETE FROM pet WHERE id=?";
-//        executeUpdate(statement, id);
         String statement = "DELETE FROM auth WHERE authToken=?";
         DatabaseManager.executeUpdate(statement, authToken);
     }
