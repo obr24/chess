@@ -48,8 +48,8 @@ public class Server {
     }
 
     public void stop() {
-        //Spark.stop();
-        //Spark.awaitStop();
+        Spark.stop();
+        Spark.awaitStop();
     }
 
     private Object addUser(Request req, Response res) throws ServiceException {
