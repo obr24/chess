@@ -10,10 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SqlAuthDAO implements AuthDAO {
-    public SqlAuthDAO() throws ServiceException {
-        configureDatabase();
-    }
-
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  auth (
@@ -27,24 +23,8 @@ public class SqlAuthDAO implements AuthDAO {
             """
     };
 
-    private void configureDatabase() throws ServiceException {
-        try {
-            DatabaseManager.createDatabase();
-        } catch (DataAccessException e) {
-            throw new ServiceException(e.getMessage(), 500);
-        }
-
-        try (var connection = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = connection.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        }
-        catch (Exception e) {
-            throw new ServiceException(String.format("Issue with database config: %s", e.getMessage()), 500);
-        }
-
+    public SqlAuthDAO() throws ServiceException {
+        DatabaseManager.configureDatabase(createStatements);
     }
 
     @Override

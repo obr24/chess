@@ -1,5 +1,7 @@
 package dataaccess;
 
+import service.ServiceException;
+
 import java.sql.*;
 import java.util.Properties;
 
@@ -93,5 +95,25 @@ public class DatabaseManager {
         } catch (SQLException e) {
             throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
+    }
+
+    public static void configureDatabase(String[] createStatements) throws ServiceException {
+        try {
+            DatabaseManager.createDatabase();
+        } catch (DataAccessException e) {
+            throw new ServiceException(e.getMessage(), 500);
+        }
+
+        try (var connection = DatabaseManager.getConnection()) {
+            for (var statement : createStatements) {
+                try (var preparedStatement = connection.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new ServiceException(String.format("Issue with database config: %s", e.getMessage()), 500);
+        }
+
     }
 }
