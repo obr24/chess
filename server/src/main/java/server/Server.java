@@ -8,15 +8,15 @@ import spark.*;
 
 public class Server {
 
-    UserDAO memoryUserDAO = new MemoryUserDAO();
-    //AuthDAO authDAO = new MemoryAuthDAO();
+    UserDAO userDAO = null;
     GamesDAO memoryGamesDAO = new MemoryGamesDAO();
-
     AuthDAO authDAO = null;
 
     public int run(int desiredPort) {
         try {
             authDAO = new SqlAuthDAO();
+            userDAO = new SqlUserDAO();
+//            userDAO = new MemoryUserDAO();
         } catch (ServiceException e) {
             throw new RuntimeException(e);
         }
@@ -54,25 +54,25 @@ public class Server {
 
     private Object addUser(Request req, Response res) throws ServiceException {
         var registerRequest = new Gson().fromJson(req.body(), RegisterRequest.class);
-        var registerResult = service.UserService.register(memoryUserDAO, authDAO, registerRequest);
+        var registerResult = service.UserService.register(userDAO, authDAO, registerRequest);
         return new Gson().toJson(registerResult);
     }
 
     private Object clearDB(Request request, Response response) throws ServiceException {
-        service.UserService.reset(memoryUserDAO, authDAO);
+        service.UserService.reset(userDAO, authDAO);
         service.GameService.reset(memoryGamesDAO);
         return new Gson().toJson(new ClearResult());
     }
 
     private Object loginUser(Request request, Response response) throws ServiceException {
         var loginRequest = new Gson().fromJson(request.body(), LoginRequest.class);
-        var loginResult = service.UserService.login(memoryUserDAO, authDAO, loginRequest);
+        var loginResult = service.UserService.login(userDAO, authDAO, loginRequest);
         return new Gson().toJson(loginResult);
     }
 
     private Object logoutUser(Request request, Response response) throws ServiceException {
         String authToken = request.headers("authorization");
-        var logoutResult = service.UserService.logout(memoryUserDAO, authDAO, new LogoutRequest(authToken));
+        var logoutResult = service.UserService.logout(userDAO, authDAO, new LogoutRequest(authToken));
         return new Gson().toJson(logoutResult);
     }
 
@@ -87,14 +87,14 @@ public class Server {
         String authToken = request.headers("authorization");
         String playerColor = new Gson().fromJson(request.body(), JoinRequest.class).playerColor();
         int gameID = new Gson().fromJson(request.body(), JoinRequest.class).gameID();
-        JoinResult joinResult = service.GameService.joinGame(memoryUserDAO, memoryGamesDAO, authDAO, authToken,
+        JoinResult joinResult = service.GameService.joinGame(userDAO, memoryGamesDAO, authDAO, authToken,
                                 playerColor, gameID);
         return new Gson().toJson(joinResult);
     }
 
     private Object listGames(Request request, Response response) throws ServiceException {
         String authToken = request.headers("authorization");
-        ListResult listResult = service.GameService.listGames(memoryUserDAO, memoryGamesDAO, authDAO, authToken);
+        ListResult listResult = service.GameService.listGames(userDAO, memoryGamesDAO, authDAO, authToken);
         return new Gson().toJson(listResult);
     }
 }
