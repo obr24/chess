@@ -18,6 +18,7 @@ public class MemoryGamesDAO implements GamesDAO {
     private int getIdAndIncrement() {
         return incrementor++;
     }
+
     public RequestsAndResults.CreateResult createGame(String gameName) {
         GameData newGame = new GameData(getIdAndIncrement(), null, null, gameName, new ChessGame());
         games.add(newGame);

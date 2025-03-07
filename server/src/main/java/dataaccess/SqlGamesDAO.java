@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 import model.RequestsAndResults;
 import service.ServiceException;
@@ -21,8 +22,7 @@ public class SqlGamesDAO implements GamesDAO {
               INDEX(gameID),
               INDEX(whiteUsername),
               INDEX(blackUsername),
-              INDEX(gameName),
-              INDEX(game)
+              INDEX(gameName)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
@@ -33,7 +33,11 @@ public class SqlGamesDAO implements GamesDAO {
 
     @Override
     public RequestsAndResults.CreateResult createGame(String gameName) throws DataAccessException {
-        return null;
+        var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
+        GameData newGame = new GameData(null, null, null, gameName, new ChessGame());
+        String json = new Gson().toJson(newGame);
+        DatabaseManager.executeUpdate(gameName, null, null, json)
+
     }
 
     @Override
@@ -48,7 +52,8 @@ public class SqlGamesDAO implements GamesDAO {
 
     @Override
     public void reset() throws DataAccessException {
-
+        String statement = "TRUNCATE games";
+        DatabaseManager.executeUpdate(statement);
     }
 
     @Override
