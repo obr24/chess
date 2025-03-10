@@ -12,21 +12,10 @@ import java.util.Objects;
 public class ChessPiece {
     private PieceType type;
     private ChessGame.TeamColor pieceColor;
-    private PieceMovesCalculator movesCalculator;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
-        this.movesCalculator = switch (type) {
-            case BISHOP -> new BishopMovesCalculator();
-            case ROOK -> new RookMovesCalculator();
-            case QUEEN -> new QueenMovesCalculator();
-            case KNIGHT -> new KnightMovesCalculator();
-            case PAWN -> new PawnMovesCalculator();
-            case KING -> new KingMovesCalculator();
-            case null, default -> null;
-        };
-
     }
 
     public ChessPiece deepCopy() {
@@ -57,7 +46,7 @@ public class ChessPiece {
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, pieceColor, movesCalculator);
+        return Objects.hash(type, pieceColor);
     }
 
     /**
@@ -82,7 +71,17 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return this.movesCalculator.pieceMoves(board, myPosition);
+        PieceMovesCalculator movesCalculator1 = switch (type) {
+            case BISHOP -> new BishopMovesCalculator();
+            case ROOK -> new RookMovesCalculator();
+            case QUEEN -> new QueenMovesCalculator();
+            case KNIGHT -> new KnightMovesCalculator();
+            case PAWN -> new PawnMovesCalculator();
+            case KING -> new KingMovesCalculator();
+            case null, default -> null;
+        };
+
+        return movesCalculator1.pieceMoves(board, myPosition);
     }
 
     @Override
