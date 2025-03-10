@@ -9,13 +9,14 @@ import spark.*;
 public class Server {
 
     UserDAO userDAO = null;
-    GamesDAO memoryGamesDAO = new MemoryGamesDAO();
+    GamesDAO gamesDAO = null;
     AuthDAO authDAO = null;
 
     public int run(int desiredPort) {
         try {
             authDAO = new SqlAuthDAO();
             userDAO = new SqlUserDAO();
+            gamesDAO = new SqlGamesDAO();
 //            userDAO = new MemoryUserDAO();
         } catch (ServiceException e) {
             throw new RuntimeException(e);
@@ -60,7 +61,7 @@ public class Server {
 
     private Object clearDB(Request request, Response response) throws ServiceException {
         service.UserService.reset(userDAO, authDAO);
-        service.GameService.reset(memoryGamesDAO);
+        service.GameService.reset(gamesDAO);
         return new Gson().toJson(new ClearResult());
     }
 
@@ -79,7 +80,7 @@ public class Server {
     private Object createGame(Request request, Response response) throws ServiceException {
         String authToken = request.headers("authorization");
         String gameName = new Gson().fromJson(request.body(), CreateRequest.class).gameName();
-        CreateResult createResult = service.GameService.createGame(memoryGamesDAO, authDAO, authToken, gameName);
+        CreateResult createResult = service.GameService.createGame(gamesDAO, authDAO, authToken, gameName);
         return new Gson().toJson(createResult);
     }
 
@@ -87,14 +88,14 @@ public class Server {
         String authToken = request.headers("authorization");
         String playerColor = new Gson().fromJson(request.body(), JoinRequest.class).playerColor();
         int gameID = new Gson().fromJson(request.body(), JoinRequest.class).gameID();
-        JoinResult joinResult = service.GameService.joinGame(userDAO, memoryGamesDAO, authDAO, authToken,
+        JoinResult joinResult = service.GameService.joinGame(userDAO, gamesDAO, authDAO, authToken,
                                 playerColor, gameID);
         return new Gson().toJson(joinResult);
     }
 
     private Object listGames(Request request, Response response) throws ServiceException {
         String authToken = request.headers("authorization");
-        ListResult listResult = service.GameService.listGames(userDAO, memoryGamesDAO, authDAO, authToken);
+        ListResult listResult = service.GameService.listGames(userDAO, gamesDAO, authDAO, authToken);
         return new Gson().toJson(listResult);
     }
 }
