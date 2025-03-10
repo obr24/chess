@@ -60,6 +60,8 @@ public class GameService {
             throw new ServiceException("Error: bad request", 400);
         }
 
+        String currGameWhiteUsername = currGame.whiteUsername();
+
         if ((wantedColor == ChessGame.TeamColor.WHITE && !Objects.isNull(currGame.whiteUsername()))
             || (wantedColor == ChessGame.TeamColor.BLACK && !Objects.isNull(currGame.blackUsername()))) {
             throw new ServiceException("Error: already taken", 403);
@@ -67,7 +69,7 @@ public class GameService {
             try {
                 gamesDAO.updateGame(wantedColor, gameID, currUser.username());
             } catch (DataAccessException e) {
-                throw new ServiceException("some error in GameService.java", 500);
+                throw new ServiceException(String.format("some error in GameService.java: %s", e.getMessage()), 500);
             }
         }
         return new RequestsAndResults.JoinResult(gameID);
