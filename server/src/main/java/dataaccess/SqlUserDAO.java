@@ -2,6 +2,7 @@ package dataaccess;
 
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 import service.ServiceException;
 import service.UserService;
 
@@ -35,7 +36,7 @@ public class SqlUserDAO implements UserDAO {
     @Override
     public void createUser(UserData user) throws DataAccessException {
         var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-        DatabaseManager.executeUpdate(statement, user.username(), user.password(), user.email());
+        DatabaseManager.executeUpdate(statement, user.username(), getBcryptPassword(user.password()), user.email());
     }
 
     private UserData readUserData(ResultSet rs) throws SQLException {
@@ -81,6 +82,12 @@ public class SqlUserDAO implements UserDAO {
         } catch (DataAccessException e) {
             return false;
         }
-        return Objects.equals(actualPassword, password);
+        return BCrypt.checkpw(password, actualPassword);
+//        return Objects.equals(actualPassword, getBcryptPassword(password));
+    }
+
+    private String getBcryptPassword(String password) {
+        String bcryptPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        return bcryptPassword;
     }
 }
