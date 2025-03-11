@@ -47,4 +47,16 @@ public class GameDaoTests {
             Assertions.fail("failed w exception");
         }
     }
+
+    @Test
+    @Order(4)
+    @DisplayName("update games fail")
+    public void updateGamesTest() {
+        try {
+            GamesDAO gamesDAO = new SqlGamesDAO();
+            gamesDAO.updateGame(ChessGame.TeamColor.WHITE, 1, "user1");
+        } catch (Exception e) {
+            Assertions.assertNotNull(e);
+        }
+    }
 }
