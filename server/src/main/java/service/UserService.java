@@ -75,13 +75,6 @@ public class UserService {
     }
 
     public static LoginResult login(UserDAO userDAO, AuthDAO authDAO, LoginRequest loginRequest) throws ServiceException {
-//        try {
-//            userDAO.getUser(loginRequest.username());
-//            AuthData newAuthToken = createAuthDataForUser(authDAO, loginRequest.username());
-//            return new LoginResult(loginRequest.username(), newAuthToken.authToken());
-//        } catch (DataAccessException e) {
-//            throw new ServiceException("Error: unauthorized", 401);
-//        }
         if (userDAO.validUser(loginRequest.username(), loginRequest.password())) {
             AuthData newAuthToken = createAuthDataForUser(authDAO, loginRequest.username());
             return new LoginResult(loginRequest.username(), newAuthToken.authToken());

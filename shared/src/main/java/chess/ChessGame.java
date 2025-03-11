@@ -61,14 +61,6 @@ public class ChessGame {
         );
         return opposingTeamMoves;
 
-//        HashMap<ChessPiece, ChessPosition> opposingTeamPieces = board.getTeamPieces(teamColor);
-//        Collection<ChessMove> opposingTeamMoves = new ArrayList<>();
-//
-//        opposingTeamPieces.forEach(
-//                (piece, position)
-//                        -> opposingTeamMoves.addAll(piece.pieceMoves(board, position))
-//        );
-//        return opposingTeamMoves;
     }
 
     private Collection<ChessPosition> getTeamEndPositions(TeamColor teamColor) {
@@ -234,16 +226,6 @@ public class ChessGame {
         }
         return true;
 
-//        if (isInCheck(TeamColor.WHITE) || isInCheck(TeamColor.BLACK)) {
-//            return false;
-//        }
-//        HashMap<ChessPiece, ChessPosition> teamPieces = board.getTeamPieces(teamColor);
-//        for (ChessPosition curPosition : teamPieces.values()) {
-//            if (!validMoves(curPosition).isEmpty()) {
-//                return false;
-//            }
-//        }
-//        return true;
     }
 
     /**
