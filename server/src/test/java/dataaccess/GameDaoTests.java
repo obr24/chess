@@ -35,4 +35,16 @@ public class GameDaoTests {
             Assertions.fail("failed w exception");
         }
     }
+
+    @Test
+    @Order(3)
+    @DisplayName("get games")
+    public void getGamesTest() {
+        try {
+            GamesDAO gamesDAO = new SqlGamesDAO();
+            gamesDAO.getGames();
+        } catch (Exception e) {
+            Assertions.fail("failed w exception");
+        }
+    }
 }
