@@ -1,9 +1,6 @@
 package dataacess;
 
-import dataaccess.AuthDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import model.RequestsAndResults;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +17,7 @@ public class UserDAOTests {
     @DisplayName("create user db")
     public void createDBTest() {
         try {
-            UserDAO memoryUserDAO = new MemoryUserDAO();
+            UserDAO memoryUserDAO = new SqlUserDAO();
         } catch (Exception e) {
             Assertions.assertNull(e);
         }
@@ -31,7 +28,18 @@ public class UserDAOTests {
     @DisplayName("create auth db")
     public void createAuthDBTest() {
         try {
-            AuthDAO memoryAuthDAO = new MemoryAuthDAO();
+            AuthDAO memoryAuthDAO = new SqlAuthDAO();
+        } catch (Exception e) {
+            Assertions.assertNull(e);
+        }
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("create game db")
+    public void createGameDBTest() {
+        try {
+            GamesDAO memoryGamesDAO = new SqlGamesDAO();
         } catch (Exception e) {
             Assertions.assertNull(e);
         }
