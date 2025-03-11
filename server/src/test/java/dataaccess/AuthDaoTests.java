@@ -18,4 +18,54 @@ public class AuthDaoTests {
             Assertions.assertNull(e);
         }
     }
+
+    @Test
+    @Order(2)
+    @DisplayName("create auth data")
+    public void createAuthDataTest() {
+        try {
+            AuthDAO authDAO = new SqlAuthDAO();
+            authDAO.createAuth(new AuthData("authtoken", "username"));
+        } catch (Exception e) {
+            Assertions.fail("failed w exception");
+        }
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("create auth data fail")
+    public void createAuthDataFailTest() {
+        try {
+            AuthDAO authDAO = new SqlAuthDAO();
+            authDAO.createAuth(new AuthData("", ""));
+        } catch (Exception e) {
+            Assertions.assertNull(e);
+        }
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("remove auth data")
+    public void removeAuthDataTest() {
+        try {
+            AuthDAO authDAO = new SqlAuthDAO();
+            authDAO.createAuth(new AuthData("authtoken", "username"));
+            authDAO.removeAuthToken("authtoken");
+        } catch (Exception e) {
+            Assertions.fail("failed w exception");
+        }
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("reset")
+    public void resetAuthDataTest() {
+        try {
+            AuthDAO authDAO = new SqlAuthDAO();
+            authDAO.createAuth(new AuthData("authtoken", "username"));
+            authDAO.reset();
+        } catch (Exception e) {
+            Assertions.fail("failed w exception");
+        }
+    }
 }
