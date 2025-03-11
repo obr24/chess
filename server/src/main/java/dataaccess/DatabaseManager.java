@@ -80,9 +80,9 @@ public class DatabaseManager {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (int i = 0; i < params.length; i++) {
                     Object param = params[i];
-                    if (param instanceof String p) preparedStatement.setString(i + 1, p);
-                    else if (param instanceof Integer p) preparedStatement.setInt(i + 1, p);
-                    else if (param == null) preparedStatement.setNull(i + 1, NULL);
+                    if (param instanceof String p) { preparedStatement.setString(i + 1, p); }
+                    else if (param instanceof Integer p) { preparedStatement.setInt(i + 1, p); }
+                    else if (param == null) { preparedStatement.setNull(i + 1, NULL); }
                 }
                 preparedStatement.executeUpdate();
 

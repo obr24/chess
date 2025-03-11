@@ -89,7 +89,7 @@ public class SqlGamesDAO implements GamesDAO {
         GameData newGameData;
         if (playerColor == ChessGame.TeamColor.WHITE /*&& gameData.whiteUsername()*/) {
             newGameData = new GameData(gameID, username, gameData.blackUsername(), gameData.gameName(), gameData.game());
-        } else if (playerColor == ChessGame.TeamColor.BLACK /* todo add test for blank black uname */) {
+        } else if (playerColor == ChessGame.TeamColor.BLACK ) {
             newGameData = new GameData(gameID, gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
         } else {
             throw new DataAccessException("incorrect color submitted");

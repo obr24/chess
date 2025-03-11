@@ -51,7 +51,7 @@ public class ChessBoard {
 
     public HashMap<ChessPosition, ChessPiece> getTeamPieces(ChessGame.TeamColor color) {
 
-        var teamPieces = new HashMap<ChessPosition, ChessPiece>(); // TODO: change hashmap so that it is more unique. rn with the chess piece, theres a lot of duplicate pieces.
+        var teamPieces = new HashMap<ChessPosition, ChessPiece>();
 
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
