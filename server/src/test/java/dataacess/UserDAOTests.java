@@ -1,5 +1,7 @@
 package dataacess;
 
+import dataaccess.AuthDAO;
+import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import dataaccess.UserDAO;
 import model.RequestsAndResults;
@@ -15,10 +17,21 @@ public class UserDAOTests {
 
     @Test
     @Order(1)
-    @DisplayName("create db")
+    @DisplayName("create user db")
     public void createDBTest() {
         try {
             UserDAO memoryUserDAO = new MemoryUserDAO();
+        } catch (Exception e) {
+            Assertions.assertNull(e);
+        }
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("create auth db")
+    public void createAuthDBTest() {
+        try {
+            AuthDAO memoryAuthDAO = new MemoryAuthDAO();
         } catch (Exception e) {
             Assertions.assertNull(e);
         }
