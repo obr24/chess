@@ -52,14 +52,23 @@ public class ChessGame {
     }
 
     private Collection<ChessMove> getTeamMoves(TeamColor teamColor) {
-        HashMap<ChessPiece, ChessPosition> opposingTeamPieces = board.getTeamPieces(teamColor);
+        HashMap<ChessPosition, ChessPiece> opposingTeamPieces = board.getTeamPieces(teamColor);
         Collection<ChessMove> opposingTeamMoves = new ArrayList<>();
 
         opposingTeamPieces.forEach(
-                (piece, position)
+                (position, piece)
                         -> opposingTeamMoves.addAll(piece.pieceMoves(board, position))
         );
         return opposingTeamMoves;
+
+//        HashMap<ChessPiece, ChessPosition> opposingTeamPieces = board.getTeamPieces(teamColor);
+//        Collection<ChessMove> opposingTeamMoves = new ArrayList<>();
+//
+//        opposingTeamPieces.forEach(
+//                (piece, position)
+//                        -> opposingTeamMoves.addAll(piece.pieceMoves(board, position))
+//        );
+//        return opposingTeamMoves;
     }
 
     private Collection<ChessPosition> getTeamEndPositions(TeamColor teamColor) {
@@ -217,13 +226,24 @@ public class ChessGame {
         if (isInCheck(TeamColor.WHITE) || isInCheck(TeamColor.BLACK)) {
             return false;
         }
-        HashMap<ChessPiece, ChessPosition> teamPieces = board.getTeamPieces(teamColor);
-        for (ChessPosition curPosition : teamPieces.values()) {
+        HashMap<ChessPosition, ChessPiece> teamPieces = board.getTeamPieces(teamColor);
+        for (ChessPosition curPosition : teamPieces.keySet()) {
             if (!validMoves(curPosition).isEmpty()) {
                 return false;
             }
         }
         return true;
+
+//        if (isInCheck(TeamColor.WHITE) || isInCheck(TeamColor.BLACK)) {
+//            return false;
+//        }
+//        HashMap<ChessPiece, ChessPosition> teamPieces = board.getTeamPieces(teamColor);
+//        for (ChessPosition curPosition : teamPieces.values()) {
+//            if (!validMoves(curPosition).isEmpty()) {
+//                return false;
+//            }
+//        }
+//        return true;
     }
 
     /**

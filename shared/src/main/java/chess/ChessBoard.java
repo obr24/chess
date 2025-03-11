@@ -49,19 +49,32 @@ public class ChessBoard {
         return squares[position.getRow()-1][position.getColumn()-1];
     }
 
-    public HashMap<ChessPiece, ChessPosition> getTeamPieces(ChessGame.TeamColor color) {
-        var teamPieces = new HashMap<ChessPiece, ChessPosition>();
+    public HashMap<ChessPosition, ChessPiece> getTeamPieces(ChessGame.TeamColor color) {
+
+        var teamPieces = new HashMap<ChessPosition, ChessPiece>(); // TODO: change hashmap so that it is more unique. rn with the chess piece, theres a lot of duplicate pieces.
 
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition curPosition = new ChessPosition(row, col);
                 ChessPiece curPiece = this.getPiece(curPosition);
                 if (curPiece != null && curPiece.getTeamColor().equals(color)) {
-                    teamPieces.put(curPiece, curPosition);
+                    teamPieces.put(curPosition, curPiece);
                 }
             }
         }
         return teamPieces;
+//        var teamPieces = new HashMap<ChessPiece, ChessPosition>(); // TODO: change hashmap so that it is more unique. rn with the chess piece, theres a lot of duplicate pieces.
+//
+//        for (int row = 1; row <= 8; row++) {
+//            for (int col = 1; col <= 8; col++) {
+//                ChessPosition curPosition = new ChessPosition(row, col);
+//                ChessPiece curPiece = this.getPiece(curPosition);
+//                if (curPiece != null && curPiece.getTeamColor().equals(color)) {
+//                    teamPieces.put(curPiece, curPosition);
+//                }
+//            }
+//        }
+//        return teamPieces;
     }
 
     public ChessPosition getKingPosition(ChessGame.TeamColor color) {
