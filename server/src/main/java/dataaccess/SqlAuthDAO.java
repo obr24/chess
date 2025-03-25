@@ -63,7 +63,7 @@ public class SqlAuthDAO implements AuthDAO {
         try {
             getAuth(authToken);
         } catch (DataAccessException e) {
-            throw new DataAccessException("not valid auth token");
+            throw new DataAccessException(String.format("not valid auth token: %s", e.getMessage()));
         }
         String statement = "DELETE FROM auth WHERE authToken=?";
         int ret = DatabaseManager.executeUpdate(statement, authToken);

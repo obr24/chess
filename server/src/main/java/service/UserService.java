@@ -88,7 +88,7 @@ public class UserService {
             authDAO.removeAuthToken(authToken);
         }
         catch(DataAccessException e) {
-            throw new ServiceException("Error: authtoken does not exist", 401); // to-do add in error for unauthorized
+            throw new ServiceException(String.format("Error: %s", e.getMessage()), 401); // to-do add in error for unauthorized
         }
     }
 
