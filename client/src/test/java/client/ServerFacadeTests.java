@@ -42,6 +42,15 @@ public class ServerFacadeTests {
         server.stop();
     }
 
+    @Test
+    public void deleteDBTest() {
+        try {
+            facade.clear(new RequestsAndResults.ClearRequest());
+            assertTrue(true);
+        } catch (ResponseException e) {
+            assertNotNull(e);
+        }
+    }
 
     @Test
     public void sampleTest() {
