@@ -11,7 +11,11 @@ import java.util.*;
 public class ChessBoard {
     private ChessPiece[][] squares = new ChessPiece[8][8];
     public ChessBoard() {
-        
+
+    }
+
+    public ChessPiece[][] getSquares() {
+        return this.squares;
     }
 
     public ChessBoard deepCopy() {
