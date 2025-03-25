@@ -17,7 +17,7 @@ public class ServerFacade {
     private final String serverUrl;
 
     public ServerFacade() {
-        serverUrl = "http://127.0.0.1"; // TODO: change default serverurl value
+        serverUrl = "http://127.0.0.1:8080"; // TODO: change default serverurl value
     }
     public ServerFacade(String url) {
         serverUrl = url;
