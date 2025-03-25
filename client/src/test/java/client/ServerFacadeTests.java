@@ -21,6 +21,22 @@ public class ServerFacadeTests {
         facade = new ServerFacade(String.format("http://127.0.0.1:%s", port));
     }
 
+    @AfterEach
+    public void deleteDB() {
+        System.out.println("Clearing out the db for the next test");
+        try {
+            facade.clear(new RequestsAndResults.ClearRequest());
+        } catch (ResponseException e) {
+            System.out.println("Error: DB clear failed");
+        }
+    }
+
+    // todo: fix pregame database resetting
+//    @BeforeEach
+//    public static void preTestInit() {
+//        server.clear();
+//    }
+
     @AfterAll
     static void stopServer() {
         server.stop();
