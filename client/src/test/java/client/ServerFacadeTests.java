@@ -1,5 +1,7 @@
 package client;
 
+import exception.ResponseException;
+import model.RequestsAndResults;
 import org.junit.jupiter.api.*;
 import server.Server;
 
