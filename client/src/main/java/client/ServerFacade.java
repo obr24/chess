@@ -23,11 +23,6 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-//    public Pet addPet(Pet pet) throws ResponseException {
-//        var path = "/pet";
-//        return this.makeRequest("POST", path, pet, Pet.class);
-//    }
-
     public RequestsAndResults.RegisterResult register(RequestsAndResults.RegisterRequest request) throws ResponseException {
         var path = "/user";
         return this.makeRequest("POST", null, path, request, RequestsAndResults.RegisterResult.class);

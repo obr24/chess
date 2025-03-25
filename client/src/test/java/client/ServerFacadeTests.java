@@ -31,12 +31,6 @@ public class ServerFacadeTests {
         }
     }
 
-    // todo: fix pregame database resetting
-//    @BeforeEach
-//    public static void preTestInit() {
-//        server.clear();
-//    }
-
     @AfterAll
     static void stopServer() {
         server.stop();
@@ -217,15 +211,6 @@ public class ServerFacadeTests {
         RequestsAndResults.RegisterResult registerAuthData = facade.register(registerTestRequest);
 
         var authToken = registerAuthData.authToken();
-
-//        var createGameRequest = new RequestsAndResults.CreateRequest(authToken, "game1");
-//
-//        RequestsAndResults.CreateResult result = new RequestsAndResults.CreateResult(0);
-//        try {
-//            result = facade.create(createGameRequest);
-//        } catch (Exception e) {
-//            fail(e.getMessage());
-//        }
 
         var listGameRequest = new RequestsAndResults.ListRequest(authToken);
 
