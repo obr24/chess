@@ -5,6 +5,8 @@ import model.RequestsAndResults;
 import org.junit.jupiter.api.*;
 import server.Server;
 
+import static chess.ChessGame.TeamColor.WHITE;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ServerFacadeTests {
 
