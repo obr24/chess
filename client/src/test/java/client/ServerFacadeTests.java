@@ -53,8 +53,11 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
+    void registerTest() throws Exception {
+        var testRequest = new RequestsAndResults.RegisterRequest("player1", "password", "p1@email.com");
+        RequestsAndResults.RegisterResult authData = facade.register(testRequest);
+        var authToken = authData.authToken();
+        assertTrue(authToken.length() > 10);
     }
 
 }
