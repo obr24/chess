@@ -104,9 +104,11 @@ public class PostLoginClient {
                 //clientState.setUserState(State.IN_GAME); // add in phase 6
             } catch (ResponseException e) {
                 throw new ResponseException(400, String.format("error in play: %s", e.getMessage()));
+            } catch (Exception e) {
+                throw new ResponseException(400, "Bad input, expected number");
             }
-            return String.format("You joined game: %s as color %s.\n%s", params[1], params[0],PrintBoard.print(
-                    getGameData(Integer.parseInt(params[0])), params[0]
+            return String.format("You joined game: %s as color %s.\n%s", params[0], params[1],PrintBoard.print(
+                    getGameData(Integer.parseInt(params[0])), params[1]
             ));
         }
         throw new ResponseException(400, "Expected: <GAME NUMBER> <COLOR>");
@@ -145,7 +147,7 @@ public class PostLoginClient {
             return String.format("observing game: %s\n%s", params[0],PrintBoard.print(
                     getGameData(Integer.parseInt(params[0])), "observer"));
         } catch (Exception e) {
-            throw new ResponseException(500, e.getMessage());
+            throw new ResponseException(500, "bad input, expected numer");
         }
     }
 

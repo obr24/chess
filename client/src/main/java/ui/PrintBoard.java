@@ -54,9 +54,9 @@ public class PrintBoard {
                 outputString.append(String.format(" %d ", i+1));
                 for (int j = 1; j <= squares.length; j++) {
                     if ((i+j) % 2 == 0) {
-                        outputString.append(SET_BG_COLOR_WHITE);
-                    } else {
                         outputString.append(SET_BG_COLOR_RED);
+                    } else {
+                        outputString.append(SET_BG_COLOR_WHITE);
                     }
                     outputString.append(getRowReverse(squares, i)[j]);
                 }
