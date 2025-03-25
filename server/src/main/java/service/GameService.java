@@ -52,9 +52,9 @@ public class GameService {
             throw new ServiceException("Error: bad request", 400);
         }
         ChessGame.TeamColor wantedColor;
-        if (Objects.equals(playerColor, "WHITE")) {
+        if (Objects.equals(playerColor, "WHITE") || Objects.equals(playerColor, "white")) {
             wantedColor = ChessGame.TeamColor.WHITE;
-        } else if (Objects.equals(playerColor, "BLACK")) {
+        } else if (Objects.equals(playerColor, "BLACK") || Objects.equals(playerColor, "black")) {
             wantedColor = ChessGame.TeamColor.BLACK;
         } else {
             throw new ServiceException("Error: bad request", 400);
