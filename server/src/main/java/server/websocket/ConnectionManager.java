@@ -15,8 +15,8 @@ public class ConnectionManager {
         connections.put(username, connection);
     }
 
-    public void remove(String visitorName) {
-        connections.remove(visitorName);
+    public void remove(String username) {
+        connections.remove(username);
     }
 
     public void broadcast(String excludeVisitorName, Notification notification) throws IOException {
