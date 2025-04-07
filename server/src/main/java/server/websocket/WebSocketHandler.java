@@ -8,7 +8,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 @WebSocket
 public class WebSocketHandler {
 
-//    private final ConnectionManager connections = new ConnectionManager();
+    private final ConnectionManager connections = new ConnectionManager();
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
