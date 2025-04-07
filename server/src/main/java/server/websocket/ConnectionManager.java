@@ -19,6 +19,10 @@ public class ConnectionManager {
         connections.remove(username);
     }
 
+    public void sendMessageToUser() {};
+    public void sendMessageToGame() {};
+    public void sendMessageToGameExceptUser() {}
+
 //    public void broadcast(String excludeVisitorName, Notification notification) throws IOException {
 //        var removeList = new ArrayList<Connection>();
 //        for (var c : connections.values()) {
