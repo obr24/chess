@@ -22,6 +22,13 @@ public class WebSocketHandler {
         }
     }
 
+    private void connect(String authToken, Integer gameID) {
+        return;
+    }
+
+    private void unknown() {
+        return;
+    }
 //    private void enter(String visitorName, Session session) throws IOException {
 //        connections.add(visitorName, session);
 //        var message = String.format("%s is in the shop", visitorName);
