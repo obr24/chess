@@ -13,17 +13,28 @@ import java.util.HashMap;
 public class ChessGame {
     private ChessBoard board;
     private TeamColor teamTurn;
+    private boolean isOver;
+
+    public boolean isOver() {
+        return isOver;
+    }
+
+    public void setOver(boolean over) {
+        isOver = over;
+    }
 
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
         teamTurn = TeamColor.WHITE;
+        this.isOver = false;
     }
 
     public ChessGame deepCopy() {
         ChessGame newGame = new ChessGame();
         newGame.setBoard(this.board.deepCopy());
         newGame.setTeamTurn(this.getTeamTurn());
+        newGame.setOver(this.isOver());
         return newGame;
     }
 
