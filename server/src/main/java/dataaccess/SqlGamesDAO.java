@@ -124,4 +124,10 @@ public class SqlGamesDAO implements GamesDAO {
         }
         return games;
     }
+
+    @Override
+    public void setGame(int gameID, ChessGame newGame) throws DataAccessException {
+        var statement = "UPDATE games SET game=? WHERE gameID=?";
+        DatabaseManager.executeUpdate(statement, gson.toJson(newGame), gameID);
+    }
 }
