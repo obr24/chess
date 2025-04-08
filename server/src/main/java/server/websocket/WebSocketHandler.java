@@ -18,6 +18,7 @@ import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
@@ -50,8 +51,63 @@ public class WebSocketHandler {
             case CONNECT -> connect(session, command.getAuthToken(), command.getGameID());
             case MAKE_MOVE -> makeMove(session, command.getAuthToken(), command.getGameID(), command.getMove());
             case RESIGN -> resign(session, command.getAuthToken(), command.getGameID());
+            case LEAVE -> leave(session, command.getAuthToken(), command.getGameID());
             case null, default -> unknown();
         }
+    }
+
+    private void leave(Session session, String authToken, Integer gameID) {
+        try {
+            String username = authDAO.getAuth(authToken).username();
+            GameData gameData = gamesDAO.getGame(gameID);
+            if (isObserver(username, gamesDAO.getGame(gameID))) {
+                connections.sendMessageToGameExceptUser(gameID, username, new Gson().toJson(new NotificationMessage(String.format("Observer %s has left", username))));
+                connections.remove(username);
+                return;
+            } else if (gameData.whiteUsername().equals(username)) {
+                gamesDAO.updateGame(WHITE, gameID, null);
+            } else if (gameData.blackUsername().equals(username)) {
+                gamesDAO.updateGame(BLACK, gameID, null);
+            }
+            connections.sendMessageToGameExceptUser(gameID, username, new Gson().toJson(new NotificationMessage(String.format("Player %s has left", username))));
+            connections.remove(username);
+        } catch (Exception e) {
+            try {
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage(String.format("%s: %s\n%s", "bad something", e.getMessage(), e.getStackTrace()))));
+            } catch (IOException ex) {
+                System.out.println("big error in leave over here");
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    private void resign(Session session, String authToken, Integer gameID) {
+        try {
+            String username = authDAO.getAuth(authToken).username();
+            if (isObserver(username, gamesDAO.getGame(gameID))) {
+                connections.sendMessageToUser(username, new Gson().toJson(new ErrorMessage("Error: you cannot resign as observer")));
+                return;
+            }
+            ChessGame game = gamesDAO.getGame(gameID).game();
+            if (game.isOver()) {
+                connections.sendMessageToUser(username, new Gson().toJson(new ErrorMessage("Error: cannot resign after game is over")));
+                return;
+            }
+            game.setOver(true);
+            gamesDAO.setGame(gameID, game);
+            connections.sendMessageToGame(gameID, new Gson().toJson(new NotificationMessage(String.format("player %s resigned", username))));
+        } catch (Exception e) {
+            try {
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage(String.format("%s: %s\n%s", "bad something", e.getMessage(), e.getStackTrace()))));
+            } catch (IOException ex) {
+                System.out.println("big error in resign over here");
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    private boolean isObserver(String username, GameData gameData) {
+        return !Objects.equals(gameData.whiteUsername(), username) && !Objects.equals(gameData.blackUsername(), username);
     }
 
     private void makeMove(Session session, String authToken, Integer gameID, ChessMove move) {
@@ -60,9 +116,6 @@ public class WebSocketHandler {
 
             if (isGameOver(game)) {
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("The game is over")));
-//                connections.sendMessageToGame(gameID, new Gson().toJson(new LoadGameMessage(
-//                        game
-//                )));
                 return;
             }
 
@@ -100,7 +153,7 @@ public class WebSocketHandler {
     }
 
     private boolean isGameOver(ChessGame game) throws DataAccessException {
-        return game.isInCheckmate(WHITE) || game.isInCheckmate(BLACK) ||
+        return game.isOver() || game.isInCheckmate(WHITE) || game.isInCheckmate(BLACK) ||
                 game.isInStalemate(WHITE) || game.isInStalemate(BLACK);
     }
 
