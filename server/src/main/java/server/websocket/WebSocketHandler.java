@@ -55,12 +55,14 @@ public class WebSocketHandler {
 
     private void makeMove(Session session, String authToken, Integer gameID, ChessMove move) {
         try {
-            if (isGameOver(gameID)) {
+            ChessGame game = gamesDAO.getGame(gameID).game();
+
+            if (isGameOver(game)) {
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("The game is over")));
                 return;
             }
+
             String username = authDAO.getAuth(authToken).username();
-            ChessGame game = gamesDAO.getGame(gameID).game();
             ChessGame.TeamColor curColor = game.getTeamTurn();
             ChessGame.TeamColor pieceColor = game.getBoard().getPiece(move.getStartPosition()).getTeamColor();
 
@@ -92,8 +94,7 @@ public class WebSocketHandler {
         }
     }
 
-    private boolean isGameOver(Integer gameID) throws DataAccessException {
-        ChessGame game = gamesDAO.getGame(gameID).game();
+    private boolean isGameOver(ChessGame game) throws DataAccessException {
         return game.isInCheckmate(WHITE) || game.isInCheckmate(BLACK) ||
                 game.isInStalemate(WHITE) || game.isInStalemate(BLACK);
     }
