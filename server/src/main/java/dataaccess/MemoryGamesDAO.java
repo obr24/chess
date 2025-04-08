@@ -15,6 +15,13 @@ public class MemoryGamesDAO implements GamesDAO {
         return games;
     }
 
+    @Override
+    public void setGame(int gameID) throws DataAccessException {
+        GameData curGame = getGame(gameID);
+        games.remove(curGame);
+        games.add(game);
+    }
+
     private int getIdAndIncrement() {
         return incrementor++;
     }
