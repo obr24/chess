@@ -49,6 +49,7 @@ public class WebSocketHandler {
         switch (command.getCommandType()) {
             case CONNECT -> connect(session, command.getAuthToken(), command.getGameID());
             case MAKE_MOVE -> makeMove(session, command.getAuthToken(), command.getGameID(), command.getMove());
+            case RESIGN -> resign(session, command.getAuthToken(), command.getGameID());
             case null, default -> unknown();
         }
     }
@@ -59,6 +60,9 @@ public class WebSocketHandler {
 
             if (isGameOver(game)) {
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("The game is over")));
+//                connections.sendMessageToGame(gameID, new Gson().toJson(new LoadGameMessage(
+//                        game
+//                )));
                 return;
             }
 
@@ -78,9 +82,10 @@ public class WebSocketHandler {
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not your turn or not your piece")));
                 return;
             }
-            gamesDAO.getGame(gameID).game().makeMove(move);
+            game.makeMove(move);
+            gamesDAO.setGame(gameID, game);
             connections.sendMessageToGame(gameID, new Gson().toJson(new LoadGameMessage(
-                    gamesDAO.getGame(gameID).game())));
+                    game)));
             connections.sendMessageToGameExceptUser(gameID, username, new Gson().toJson(
                     new NotificationMessage(String.format("%s made move %s", username, move.toString()))));
             inCheckorStalemate(gameID);
