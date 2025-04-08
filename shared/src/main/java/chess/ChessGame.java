@@ -167,6 +167,16 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+
+        if (startPosition.getColumn() < 1 || startPosition.getColumn() > 8 ||
+                startPosition.getRow() < 1 || startPosition.getRow() > 8 ||
+                endPosition.getColumn() < 1 || endPosition.getColumn() > 8 ||
+                endPosition.getRow() < 1 || endPosition.getRow() > 8) {
+            throw new InvalidMoveException("Invalid position: out of bounds");
+        }
+
+
         ChessPiece curPiece = board.getPiece(startPosition);
         if (curPiece == null) {
             throw new InvalidMoveException("bad move: no piece there");
