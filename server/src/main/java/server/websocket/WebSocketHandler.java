@@ -61,7 +61,8 @@ public class WebSocketHandler {
             String username = authDAO.getAuth(authToken).username();
             GameData gameData = gamesDAO.getGame(gameID);
             if (isObserver(username, gamesDAO.getGame(gameID))) {
-                connections.sendMessageToGameExceptUser(gameID, username, new Gson().toJson(new NotificationMessage(String.format("Observer %s has left", username))));
+                connections.sendMessageToGameExceptUser(gameID, username,
+                        new Gson().toJson(new NotificationMessage(String.format("Observer %s has left", username))));
                 connections.remove(username);
                 return;
             } else if (gameData.whiteUsername().equals(username)) {
@@ -69,11 +70,13 @@ public class WebSocketHandler {
             } else if (gameData.blackUsername().equals(username)) {
                 gamesDAO.updateGame(BLACK, gameID, null);
             }
-            connections.sendMessageToGameExceptUser(gameID, username, new Gson().toJson(new NotificationMessage(String.format("Player %s has left", username))));
+            connections.sendMessageToGameExceptUser(gameID, username,
+                    new Gson().toJson(new NotificationMessage(String.format("Player %s has left", username))));
             connections.remove(username);
         } catch (Exception e) {
             try {
-                session.getRemote().sendString(new Gson().toJson(new ErrorMessage(String.format("%s: %s\n%s", "bad something", e.getMessage(), e.getStackTrace()))));
+                session.getRemote().sendString(new Gson().toJson(
+                        new ErrorMessage(String.format("%s: %s\n%s", "bad error", e.getMessage()))));
             } catch (IOException ex) {
                 System.out.println("big error in leave over here");
                 throw new RuntimeException(ex);
@@ -98,7 +101,8 @@ public class WebSocketHandler {
             connections.sendMessageToGame(gameID, new Gson().toJson(new NotificationMessage(String.format("player %s resigned", username))));
         } catch (Exception e) {
             try {
-                session.getRemote().sendString(new Gson().toJson(new ErrorMessage(String.format("%s: %s\n%s", "bad something", e.getMessage(), e.getStackTrace()))));
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage(
+                        String.format("%s: %s\n%s", "bad error something", e.getMessage()))));
             } catch (IOException ex) {
                 System.out.println("big error in resign over here");
                 throw new RuntimeException(ex);
@@ -144,7 +148,8 @@ public class WebSocketHandler {
             inCheckorStalemate(gameID);
         } catch (Exception e) {
             try {
-                session.getRemote().sendString(new Gson().toJson(new ErrorMessage(String.format("%s: %s\n%s", "bad something", e.getMessage(), e.getStackTrace()))));
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage(String.format("%s: %s\n%s",
+                        "bad something", e.getMessage(), e.getStackTrace()))));
             } catch (IOException ex) {
                 System.out.println("big error over here");
                 throw new RuntimeException(ex);
@@ -197,27 +202,4 @@ public class WebSocketHandler {
     private void unknown() {
         return;
     }
-//    private void enter(String visitorName, Session session) throws IOException {
-//        connections.add(visitorName, session);
-//        var message = String.format("%s is in the shop", visitorName);
-//        var notification = new Notification(Notification.Type.ARRIVAL, message);
-//        connections.broadcast(visitorName, notification);
-//    }
-
-//    private void exit(String visitorName) throws IOException {
-//        connections.remove(visitorName);
-//        var message = String.format("%s left the shop", visitorName);
-//        var notification = new Notification(Notification.Type.DEPARTURE, message);
-//        connections.broadcast(visitorName, notification);
-//    }
-
-//    public void makeNoise(String petName, String sound) throws ResponseException {
-//        try {
-//            var message = String.format("%s says %s", petName, sound);
-//            var notification = new Notification(Notification.Type.NOISE, message);
-//            connections.broadcast("", notification);
-//        } catch (Exception ex) {
-//            throw new ResponseException(500, ex.getMessage());
-//        }
-//    }
 }
