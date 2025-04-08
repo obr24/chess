@@ -12,4 +12,5 @@ public interface GamesDAO {
    void updateGame(ChessGame.TeamColor playerColor, int gameID, String username) throws DataAccessException;
    void reset() throws DataAccessException;
    Collection<GameData> getGames() throws DataAccessException;
+   void setGame(int gameID, ChessGame game) throws DataAccessException;
 }
