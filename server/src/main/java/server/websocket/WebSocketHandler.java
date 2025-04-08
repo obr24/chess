@@ -1,7 +1,10 @@
 package server.websocket;
 
+import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.*;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -9,8 +12,14 @@ import service.GameService;
 import service.ServiceException;
 import websocket.commands.UserGameCommand;
 import service.GameService.*;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
+import java.io.IOException;
+
+import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 import static service.GameService.joinGame;
 
@@ -39,19 +48,91 @@ public class WebSocketHandler {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case CONNECT -> connect(session, command.getAuthToken(), command.getGameID());
+            case MAKE_MOVE -> makeMove(session, command.getAuthToken(), command.getGameID(), command.getMove());
             case null, default -> unknown();
+        }
+    }
+
+    private void makeMove(Session session, String authToken, Integer gameID, ChessMove move) {
+        try {
+            if (isGameOver(gameID)) {
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("The game is over")));
+                return;
+            }
+            String username = authDAO.getAuth(authToken).username();
+            ChessGame game = gamesDAO.getGame(gameID).game();
+            ChessGame.TeamColor curColor = game.getTeamTurn();
+            ChessGame.TeamColor pieceColor = game.getBoard().getPiece(move.getStartPosition()).getTeamColor();
+
+            boolean isWhiteTurn = curColor.equals(WHITE) &&
+                    gamesDAO.getGame(gameID).whiteUsername().equals(username) &&
+                    pieceColor.equals(WHITE);
+
+            boolean isBlackTurn = curColor.equals(BLACK) &&
+                    gamesDAO.getGame(gameID).blackUsername().equals(username) &&
+                    pieceColor.equals(BLACK);
+
+            if (!isWhiteTurn && !isBlackTurn) {
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not your turn or not your piece")));
+                return;
+            }
+            gamesDAO.getGame(gameID).game().makeMove(move);
+            connections.sendMessageToGame(gameID, new Gson().toJson(new LoadGameMessage(
+                    gamesDAO.getGame(gameID).game())));
+            connections.sendMessageToGameExceptUser(gameID, username, new Gson().toJson(
+                    new NotificationMessage(String.format("%s made move %s", username, move.toString()))));
+            inCheckorStalemate(gameID);
+        } catch (Exception e) {
+            try {
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage(String.format("%s: %s\n%s", "bad something", e.getMessage(), e.getStackTrace()))));
+            } catch (IOException ex) {
+                System.out.println("big error over here");
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    private boolean isGameOver(Integer gameID) throws DataAccessException {
+        ChessGame game = gamesDAO.getGame(gameID).game();
+        return game.isInCheckmate(WHITE) || game.isInCheckmate(BLACK) ||
+                game.isInStalemate(WHITE) || game.isInStalemate(BLACK);
+    }
+
+    private void inCheckorStalemate(Integer gameID) throws DataAccessException {
+        if (gamesDAO.getGame(gameID).game().isInCheck(WHITE) || gamesDAO.getGame(gameID).game().isInCheck(BLACK)) {
+            connections.sendMessageToGame(gameID, new Gson().toJson(new NotificationMessage("game in check")));
+        } else if (gamesDAO.getGame(gameID).game().isInCheckmate(WHITE) || gamesDAO.getGame(gameID).game().isInCheckmate(BLACK)) {
+            connections.sendMessageToGame(gameID, new Gson().toJson(new NotificationMessage("game in checkmate")));
+        } else if (gamesDAO.getGame(gameID).game().isInStalemate(WHITE) || gamesDAO.getGame(gameID).game().isInStalemate(BLACK)) {
+            connections.sendMessageToGame(gameID, new Gson().toJson(new NotificationMessage("game in stalemate")));
         }
     }
 
     private void connect(Session session, String authToken, Integer gameID) {
         try {
-            connections.add(authDAO.getAuth(authToken).username(), gameID, session);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+            String username = authDAO.getAuth(authToken).username();
+            connections.add(username, gameID, session);
+            connections.sendMessageToUser(username, new Gson().toJson(new LoadGameMessage(gamesDAO.getGame(gameID).game())));
 
-        ConnectionManager.send
-        session.getRemote().sendString(msg);
+            String playerColor;
+            if (gamesDAO.getGame(gameID).whiteUsername().equals(username)) {
+                playerColor = "white";
+            } else if (gamesDAO.getGame(gameID).whiteUsername().equals(username)) {
+                playerColor = "black";
+            } else {
+                playerColor = "an observer";
+            }
+
+            connections.sendMessageToGameExceptUser(gameID, username, new Gson().toJson(
+                    new NotificationMessage(String.format("%s joined game as %s", username, playerColor))));
+        } catch (DataAccessException e) {
+            try {
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("bad authentication")));
+            } catch (IOException ex) {
+                System.out.println("big error over here");
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     private void unknown() {

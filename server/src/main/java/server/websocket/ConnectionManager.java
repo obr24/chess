@@ -5,6 +5,7 @@ import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
@@ -19,25 +20,56 @@ public class ConnectionManager {
         connections.remove(username);
     }
 
-    public void sendMessageToUser() {};
-    public void sendMessageToGame() {};
-    public void sendMessageToGameExceptUser() {}
+    public void sendMessageToUser(String username, String msg) {
+        cleanupConnections();
+        try {
+            connections.get(username).send(msg);
+        } catch (IOException e) {
+            System.out.println("dfsasfdasfdslkj");
+            throw new RuntimeException(e);
+        }
+    }
 
-//    public void broadcast(String excludeVisitorName, Notification notification) throws IOException {
-//        var removeList = new ArrayList<Connection>();
-//        for (var c : connections.values()) {
-//            if (c.session.isOpen()) {
-//                if (!c.username.equals(excludeVisitorName)) {
-//                    c.send(notification.toString());
-//                }
-//            } else {
-//                removeList.add(c);
-//            }
-//        }
-//
-//        // Clean up any connections that were left open.
-//        for (var c : removeList) {
-//            connections.remove(c.username);
-//        }
-//    }
+    public void sendMessageToGame(Integer gameID, String msg) {
+        cleanupConnections();
+        for (Map.Entry<String, Connection> entry : connections.entrySet()) {
+            Connection connection = entry.getValue();
+            if (connection.gameID.equals(gameID)) {
+                try {
+                    connection.send(msg);
+                } catch (IOException e) {
+                    System.out.println("safdafsk: ");
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public void sendMessageToGameExceptUser(Integer gameID, String username, String msg) {
+        cleanupConnections();
+        for (Map.Entry<String, Connection> entry : connections.entrySet()) {
+            Connection connection = entry.getValue();
+            if (connection.gameID.equals(gameID) && !(connection.username.equals(username))) {
+                try {
+                    connection.send(msg);
+                } catch (IOException e) {
+                    System.out.println("safdafsk: ");
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public void cleanupConnections() {
+        var removeList = new ArrayList<Connection>();
+        for (var c : connections.values()) {
+            if (!c.session.isOpen()) {
+                removeList.add(c);
+            }
+        }
+        // Clean up any connections that were left open.
+        for (var c : removeList) {
+            connections.remove(c.username);
+        }
+    }
 }
