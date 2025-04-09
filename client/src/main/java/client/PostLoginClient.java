@@ -39,7 +39,7 @@ public class PostLoginClient {
                 default -> unknownInput();
             };
         } catch (ResponseException ex) {
-            return String.format("error in prelogin: %s", ex.getMessage());
+            return String.format("error in prelogin2: %s", ex.getMessage());
         }
 
     }
