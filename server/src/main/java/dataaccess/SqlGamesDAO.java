@@ -58,7 +58,6 @@ public class SqlGamesDAO implements GamesDAO {
         String blackUsername = rs.getString("blackUsername");
         String gameJson = rs.getString("game");
 
-        System.out.printf("\nGSON TO STRING (read) %s", gson.toString());
         ChessGame gameObject = new Gson().fromJson(gameJson, ChessGame.class);
 
         return new GameData(gameID, whiteUsername, blackUsername, gameName, gameObject);
