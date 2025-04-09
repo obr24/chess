@@ -12,16 +12,16 @@ import java.util.Objects;
 import static ui.EscapeSequences.*;
 
 public class PrintBoard {
-    public static String print(GameData gameData, String perspective) {
+    public static String print(ChessGame game, String perspective) {
 
-        StringBuilder outputString = new StringBuilder(SET_BG_COLOR_LIGHT_GREY + SET_BG_COLOR_BLACK);
+        StringBuilder outputString = new StringBuilder(RESET_BG_COLOR + RESET_TEXT_COLOR + SET_TEXT_COLOR_BLUE + SET_BG_COLOR_BLACK);
         Collection<String> boardArray = new ArrayList<String>();
 
-        ChessBoard board = gameData.game().getBoard();
+        ChessBoard board = game.getBoard();
         ChessPiece[][] squares = board.getSquares();
 
         String[] top = rowHeaders();
-        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer")) {
+        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer") || Objects.equals(perspective, ChessGame.TeamColor.WHITE.toString())) {
             for (String s : top) {
                 outputString.append(s);
             }
@@ -31,7 +31,7 @@ public class PrintBoard {
             }
         }
 
-        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer")) {
+        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer") || Objects.equals(perspective, ChessGame.TeamColor.WHITE.toString())) {
             for (int i = squares.length-1; i >= 0; i--) {
                 outputString.append("\n");
                 outputString.append(SET_BG_COLOR_BLACK);
@@ -66,7 +66,7 @@ public class PrintBoard {
         }
         outputString.append("\n");
 
-        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer")) {
+        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer") || Objects.equals(perspective, ChessGame.TeamColor.WHITE.toString())) {
             for (String s : top) {
                 outputString.append(s);
             }
