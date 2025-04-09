@@ -34,7 +34,7 @@ public class PreLoginClient {
                 default -> unknownInput();
             };
         } catch (ResponseException ex) {
-            return String.format("error in prelogin: %s", ex.getMessage());
+            return String.format("error in prelogin3: %s", ex.getMessage());
         }
     }
 
