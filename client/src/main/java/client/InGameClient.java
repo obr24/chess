@@ -1,5 +1,8 @@
 package client;
 
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import client.websocket.NotificationHandler;
 import client.websocket.WebSocketFacade;
 import exception.ResponseException;
@@ -49,7 +52,7 @@ public class InGameClient {
             };
 //        } catch (ResponseException ex) {
         } catch (Exception ex) {
-            return String.format("error in prelogin: %s", ex.getMessage());
+            return String.format("error in prelogin1: %s", ex.getMessage());
         }
     }
 
@@ -67,8 +70,50 @@ public class InGameClient {
         return "Leaving now";
     }
 
-    public String move(String[] params) {
-        return String.format("Attempting move with params: %s", Arrays.toString(params));
+    public String move(String[] params) throws ResponseException {
+        if (params.length < 2 || params.length > 3) {
+            throw new ResponseException(500, "Invalid move. try f5 e4 q");
+        }
+        ChessPosition startPosition = moveTranslator(params[0]);
+        ChessPosition endPosition = moveTranslator(params[1]);
+        ChessPiece.PieceType promotionPiece = null;
+        if (params.length == 3) {
+            promotionPiece = pieceTranslator(params[2]);
+        }
+        ChessMove newMove = new ChessMove(startPosition, endPosition, promotionPiece);
+        wsFacade.makeMove(clientState.getAuthToken(), clientState.getGameID(), newMove);
+        return "making move";
+    }
+
+    private ChessPiece.PieceType pieceTranslator(String pieceString) throws ResponseException {
+        char[] chars = pieceString.toCharArray();
+        if (chars.length != 1) {
+            throw new ResponseException(500, "Invalid move. try f5 e4 q");
+        }
+        char pieceChar = chars[0];
+        return switch (pieceChar) {
+            case 'r' -> ChessPiece.PieceType.ROOK;
+            case 'n' -> ChessPiece.PieceType.KNIGHT;
+            case 'b' -> ChessPiece.PieceType.BISHOP;
+            case 'q' -> ChessPiece.PieceType.QUEEN;
+            case 'k' -> ChessPiece.PieceType.KING;
+            case 'p' -> ChessPiece.PieceType.PAWN;
+            default -> throw new ResponseException(500, "bad piece type. Use: r, n, b, q, k, p");
+        };
+    }
+
+    private ChessPosition moveTranslator(String moveString) throws ResponseException {
+        char[] chars = moveString.toCharArray();
+        if (!(chars.length == 2)) {
+            throw new ResponseException(500, "Invalid move. try f5 e4 q");
+        }
+        if ((int)chars[0] < 97 || (int)chars[0] > 104 || (int)chars[1] < 48 || (int)chars[1] > 56) { // checks if in range of ascii
+            throw new ResponseException(500, "Invalid move. try pattern f5 e4 q");
+        }
+        int col = chars[0] - 'a' + 1;
+        int row = chars[1] - '1' + 1;
+
+        return new ChessPosition(row, col);
     }
 
     public String resign() throws ResponseException {
