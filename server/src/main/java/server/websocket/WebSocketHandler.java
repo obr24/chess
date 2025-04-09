@@ -162,11 +162,12 @@ public class WebSocketHandler {
     }
 
     private void inCheckorStalemate(Integer gameID) throws DataAccessException {
-        if (gamesDAO.getGame(gameID).game().isInCheck(WHITE) || gamesDAO.getGame(gameID).game().isInCheck(BLACK)) {
+        ChessGame chessGame = gamesDAO.getGame(gameID).game();
+        if (chessGame.isInCheck(WHITE) || chessGame.isInCheck(BLACK)) {
             connections.sendMessageToGame(gameID, new Gson().toJson(new NotificationMessage("game in check")));
-        } else if (gamesDAO.getGame(gameID).game().isInCheckmate(WHITE) || gamesDAO.getGame(gameID).game().isInCheckmate(BLACK)) {
+        } else if (chessGame.isInCheckmate(WHITE) || chessGame.isInCheckmate(BLACK)) {
             connections.sendMessageToGame(gameID, new Gson().toJson(new NotificationMessage("game in checkmate")));
-        } else if (gamesDAO.getGame(gameID).game().isInStalemate(WHITE) || gamesDAO.getGame(gameID).game().isInStalemate(BLACK)) {
+        } else if (chessGame.isInStalemate(WHITE) || chessGame.isInStalemate(BLACK)) {
             connections.sendMessageToGame(gameID, new Gson().toJson(new NotificationMessage("game in stalemate")));
         }
     }
