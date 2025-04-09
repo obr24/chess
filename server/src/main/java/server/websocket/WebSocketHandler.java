@@ -148,8 +148,7 @@ public class WebSocketHandler {
             inCheckorStalemate(gameID);
         } catch (Exception e) {
             try {
-                session.getRemote().sendString(new Gson().toJson(new ErrorMessage(String.format("%s: %s\n%s",
-                        "bad something", e.getMessage(), e.getStackTrace()))));
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("bad move. try again.")));
             } catch (IOException ex) {
                 System.out.println("big error over here");
                 throw new RuntimeException(ex);
@@ -181,7 +180,7 @@ public class WebSocketHandler {
             String playerColor;
             if (gamesDAO.getGame(gameID).whiteUsername().equals(username)) {
                 playerColor = "white";
-            } else if (gamesDAO.getGame(gameID).whiteUsername().equals(username)) {
+            } else if (gamesDAO.getGame(gameID).blackUsername().equals(username)) {
                 playerColor = "black";
             } else {
                 playerColor = "an observer";
