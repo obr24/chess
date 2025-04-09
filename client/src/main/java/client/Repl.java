@@ -1,12 +1,20 @@
 package client;
 
+import client.websocket.NotificationHandler;
+import client.websocket.WebSocketFacade;
+import com.google.gson.Gson;
+import exception.ResponseException;
+import ui.PrintBoard;
+import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
+
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
-public class Repl {
-    // each repl is sort of nested in the other. ie. A user starts in preLoginClient.PreLoginClient. Then they login and
-    // go to preLoginClient.PostLoginClient. Then they choose a game and go to the inGameCleint.
-    // once they exit, they first go to the postloginclient, then the preloginclient after logging out
+public class Repl implements NotificationHandler {
 
     private final ServerFacade facade;
     private final PreLoginClient preLoginClient;
@@ -14,18 +22,20 @@ public class Repl {
     private final InGameClient inGameClient;
     private ClientState clientState;
 
+    private final WebSocketFacade wsFacade;
     public Repl(String serverUrl) {
         facade = new ServerFacade("http://127.0.0.1:8080");
+        try {
+            wsFacade = new WebSocketFacade("http://127.0.0.1:8080", this); // todo double check url
+        } catch (ResponseException e) {
+            System.out.println("very grand issue in repl:");
+            throw new RuntimeException(e);
+        }
+
         clientState = new ClientState();
         preLoginClient = new PreLoginClient(facade, clientState);
-        postLoginClient = new PostLoginClient(facade, clientState);
-        inGameClient = new InGameClient(facade, clientState);
-
-        // todo next time make sure to start server before starting preLoginClient
-        // u need to work on the preloginclient, finish that, then set the logged in state to true
-        // then create post loginclient
-        // then after joinging game, call post join preLoginClient
-        // then print the board. good luck
+        inGameClient = new InGameClient(wsFacade, facade, clientState);
+        postLoginClient = new PostLoginClient(inGameClient, facade, clientState);
     }
 
     public void run() {
@@ -59,5 +69,45 @@ public class Repl {
 
     private String resetAll() {
         return RESET_TEXT_COLOR + RESET_BG_COLOR;
+    }
+
+    // finish overloading loadgame and notification
+    public void notifyError(ErrorMessage message) {
+        handleError(message);
+    }
+
+    public void notifyLoadGame(LoadGameMessage message) {
+        handleLoadGame(message);
+    }
+
+    public void notifyNotification(NotificationMessage message) {
+        handleNotification(message);
+    }
+
+    @Override
+    public void notify(ServerMessage message) {
+        handleUnknown(message);
+        printPrompt();
+    }
+
+    private void handleLoadGame(LoadGameMessage message) {
+        clientState.setChessGame(message.getGame());
+        System.out.println("\n" + PrintBoard.print(clientState.getChessGame(), clientState.getPlayerColor().toString()));
+        printPrompt();
+    }
+
+    private void handleNotification(NotificationMessage message) {
+        System.out.println(message.getMessage());
+        printPrompt();
+    }
+
+    private void handleError(ErrorMessage message) {
+        System.out.println("Error Message: " + message.toString());
+        printPrompt();
+    }
+
+    private void handleUnknown(ServerMessage message) {
+        System.out.println("Unknown Message Type: " + message);
+        printPrompt();
     }
 }
