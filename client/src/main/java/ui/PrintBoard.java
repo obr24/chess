@@ -3,6 +3,7 @@ package ui;
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
+import chess.ChessPosition;
 import model.GameData;
 
 import java.util.ArrayList;
@@ -12,7 +13,11 @@ import java.util.Objects;
 import static ui.EscapeSequences.*;
 
 public class PrintBoard {
-    public static String print(ChessGame game, String perspective) {
+    public static String print(ChessGame game, String perspective, ChessPosition position) {
+        Collection<ChessPosition> validPositions = new ArrayList<>();
+        if (!Objects.equals(position, null)) {
+            validPositions = game.validEndPositions(position);
+        }
 
         StringBuilder outputString = new StringBuilder(RESET_BG_COLOR + RESET_TEXT_COLOR + SET_TEXT_COLOR_BLUE + SET_BG_COLOR_BLACK);
         Collection<String> boardArray = new ArrayList<String>();
@@ -21,7 +26,8 @@ public class PrintBoard {
         ChessPiece[][] squares = board.getSquares();
 
         String[] top = rowHeaders();
-        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer") || Objects.equals(perspective, ChessGame.TeamColor.WHITE.toString())) {
+        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer") || Objects.equals(perspective, ChessGame.TeamColor.WHITE.toString())
+                || Objects.equals(perspective, null)) {
             for (String s : top) {
                 outputString.append(s);
             }
@@ -31,13 +37,17 @@ public class PrintBoard {
             }
         }
 
-        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer") || Objects.equals(perspective, ChessGame.TeamColor.WHITE.toString())) {
+        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer") || Objects.equals(perspective, ChessGame.TeamColor.WHITE.toString())
+                || Objects.equals(perspective, null)) {
             for (int i = squares.length-1; i >= 0; i--) {
                 outputString.append("\n");
                 outputString.append(SET_BG_COLOR_BLACK);
                 outputString.append(String.format(" %d ", i+1));
                 for (int j = 1; j <= squares.length; j++) {
-                    if ((i+j) % 2 == 0) {
+                    // add if here for if valid position
+                    if (inValidMoves(validPositions, i, j)) {
+                        outputString.append(SET_BG_COLOR_YELLOW);
+                    } else if ((i+j) % 2 == 0) {
                         outputString.append(SET_BG_COLOR_WHITE);
                     } else {
                         outputString.append(SET_BG_COLOR_RED);
@@ -53,7 +63,10 @@ public class PrintBoard {
                 outputString.append(SET_BG_COLOR_BLACK);
                 outputString.append(String.format(" %d ", i+1));
                 for (int j = 1; j <= squares.length; j++) {
-                    if ((i+j) % 2 == 0) {
+                    // add if here for if valid position
+                    if (inValidMoves(validPositions, i, j)) {
+                        outputString.append(SET_BG_COLOR_YELLOW);
+                    } if ((i+j) % 2 == 0) {
                         outputString.append(SET_BG_COLOR_RED);
                     } else {
                         outputString.append(SET_BG_COLOR_WHITE);
@@ -66,7 +79,8 @@ public class PrintBoard {
         }
         outputString.append("\n");
 
-        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer") || Objects.equals(perspective, ChessGame.TeamColor.WHITE.toString())) {
+        if (Objects.equals(perspective, "white") || Objects.equals(perspective, "observer") || Objects.equals(perspective, ChessGame.TeamColor.WHITE.toString())
+                || Objects.equals(perspective, null)) {
             for (String s : top) {
                 outputString.append(s);
             }
@@ -76,6 +90,15 @@ public class PrintBoard {
             }
         }
         return outputString.toString();
+    }
+
+    private static boolean inValidMoves(Collection<ChessPosition> validPositions, int row, int col) {
+        for (ChessPosition validPosition : validPositions) {
+            if (Objects.equals(validPosition.getColumn(), col) && Objects.equals(validPosition.getRow(), row+1)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static String[] rowHeaders() {
