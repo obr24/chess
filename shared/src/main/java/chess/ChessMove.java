@@ -15,7 +15,31 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return String.format("start: %s; end: %s; promotionPiece: %s\n", this.getStartPosition(), this.getEndPosition(), this.getPromotionPiece());
+        return String.format("%s -> %s; promotionPiece: %s\n",
+                positionToString(this.getStartPosition()), positionToString(this.getEndPosition()),
+                pieceToString(this.getPromotionPiece()));
+    }
+
+    private String positionToString(ChessPosition position) {
+        int row = position.getRow();
+        int col = position.getColumn();
+        char[] chars = {
+                (char) (col + 'a'),
+                (char) (row + '1')
+        };
+        return String.valueOf(chars);
+    }
+
+    private String pieceToString(ChessPiece.PieceType pieceType) {
+        return switch (pieceType) {
+            case ROOK -> "rook";
+            case PAWN -> "pawn";
+            case QUEEN -> "queen";
+            case KING -> "king";
+            case KNIGHT -> "knight";
+            case BISHOP -> "bishop";
+            case null, default -> "";
+        };
     }
 
     @Override
