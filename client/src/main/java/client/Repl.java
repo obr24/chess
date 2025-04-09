@@ -102,7 +102,7 @@ public class Repl implements NotificationHandler {
     }
 
     private void handleError(ErrorMessage message) {
-        System.out.println("Error Message: " + message.toString());
+        System.out.println("Error: " + message.toString());
         printPrompt();
     }
 
