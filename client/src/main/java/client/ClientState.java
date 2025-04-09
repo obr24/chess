@@ -5,6 +5,7 @@ import model.GameData;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ClientState {
     private ChessGame chessGame;
