@@ -157,6 +157,16 @@ public class ChessGame {
         return moves;
     }
 
+    public Collection<ChessPosition> validEndPositions(ChessPosition startPosition) {
+        var pieceValidMoves = validMoves(startPosition);
+        Collection<ChessPosition> endPositions = new ArrayList<>();
+
+        for (ChessMove validMove : pieceValidMoves) {
+            endPositions.add(validMove.getEndPosition());
+        }
+        return endPositions;
+    }
+
     private boolean validMove(ChessMove move) {
         ChessPosition startPosition = move.getStartPosition();
         ChessPiece curPiece = board.getPiece(startPosition);
