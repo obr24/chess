@@ -15,11 +15,13 @@ public class PostLoginClient {
     private final ServerFacade facade;
     private final ClientState clientState;
     private final PrintBoard printBoard;
+    private final InGameClient inGameClient;
 
-    public PostLoginClient(ServerFacade facade, ClientState clientState) {
+    public PostLoginClient(InGameClient inGameClient, ServerFacade facade, ClientState clientState) {
         this.facade = facade;
         this.clientState = clientState;
         this.printBoard = new PrintBoard();
+        this.inGameClient = inGameClient;
     }
 
     public String eval(String input) {
@@ -101,15 +103,14 @@ public class PostLoginClient {
                         getRealGameId(Integer.parseInt(params[0]))));
                 clientState.setGameID(joinResult.gameID());
                 clientState.setPlayerColor(parseStringAsColor(params[1]));
-                //clientState.setUserState(State.IN_GAME); // add in phase 6
+                clientState.setUserState(State.IN_GAME); // add in phase 6
+                inGameClient.initializeWebSocket();
             } catch (ResponseException e) {
                 throw new ResponseException(400, String.format("error in play: %s", e.getMessage()));
             } catch (Exception e) {
                 throw new ResponseException(400, "Bad input, expected number");
             }
-            return String.format("You joined game: %s as color %s.\n%s", params[0], params[1],PrintBoard.print(
-                    getGameData(Integer.parseInt(params[0])), params[1]
-            ));
+            return String.format("You joined game: %s as color %s.", params[0], params[1]);
         }
         throw new ResponseException(400, "Expected: <GAME NUMBER> <COLOR>");
     }
@@ -145,7 +146,7 @@ public class PostLoginClient {
             clientState.setObservingGameID(getRealGameId(Integer.parseInt(params[0])));
 //            clientState.setUserState(State.IN_GAME);
             return String.format("observing game: %s\n%s", params[0],PrintBoard.print(
-                    getGameData(Integer.parseInt(params[0])), "observer"));
+                    getGameData(Integer.parseInt(params[0])).game(), "observer"));
         } catch (Exception e) {
             throw new ResponseException(500, "bad input, expected numer");
         }
