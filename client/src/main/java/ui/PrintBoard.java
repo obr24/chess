@@ -66,7 +66,7 @@ public class PrintBoard {
                     // add if here for if valid position
                     if (inValidMoves(validPositions, i, j)) {
                         outputString.append(SET_BG_COLOR_YELLOW);
-                    } if ((i+j) % 2 == 0) {
+                    } else if ((i+j) % 2 == 0) {
                         outputString.append(SET_BG_COLOR_RED);
                     } else {
                         outputString.append(SET_BG_COLOR_WHITE);
