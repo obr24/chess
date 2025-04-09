@@ -95,26 +95,6 @@ public class PostLoginClient {
         clientState.setClientGameIdtoRealGameId(gamesHash);
     }
 
-    private String playGame(String[] params) throws ResponseException {
-        if (params.length == 2) {
-            RequestsAndResults.JoinResult joinResult;
-            try {
-                joinResult = facade.join(new RequestsAndResults.JoinRequest(clientState.getAuthToken(), params[1],
-                        getRealGameId(Integer.parseInt(params[0]))));
-                clientState.setGameID(joinResult.gameID());
-                clientState.setPlayerColor(parseStringAsColor(params[1]));
-                clientState.setUserState(State.IN_GAME); // add in phase 6
-                inGameClient.initializeWebSocket();
-            } catch (ResponseException e) {
-                throw new ResponseException(400, String.format("error in play: %s", e.getMessage()));
-            } catch (Exception e) {
-                throw new ResponseException(400, "Bad input, expected number");
-            }
-            return String.format("You joined game: %s as color %s.", params[0], params[1]);
-        }
-        throw new ResponseException(400, "Expected: <GAME NUMBER> <COLOR>");
-    }
-
     private ChessGame.TeamColor parseStringAsColor(String colorString) throws ResponseException {
         if (Objects.equals(colorString.toLowerCase(), "white")) {
             return WHITE;
@@ -141,14 +121,39 @@ public class PostLoginClient {
 
     }
 
+    private String playGame(String[] params) throws ResponseException {
+        if (params.length == 2) {
+            RequestsAndResults.JoinResult joinResult;
+            try {
+                joinResult = facade.join(new RequestsAndResults.JoinRequest(clientState.getAuthToken(), params[1],
+                        getRealGameId(Integer.parseInt(params[0]))));
+                clientState.setGameID(joinResult.gameID());
+                clientState.setPlayerColor(parseStringAsColor(params[1]));
+                clientState.setUserState(State.IN_GAME); // add in phase 6
+                inGameClient.initializeWebSocket();
+            } catch (ResponseException e) {
+                throw new ResponseException(400, String.format("error in play: %s", e.getMessage()));
+            } catch (Exception e) {
+                throw new ResponseException(400, "Bad input, expected number");
+            }
+            return String.format("You joined game: %s as color %s.", params[0], params[1]);
+        }
+        throw new ResponseException(400, "Expected: <GAME NUMBER> <COLOR>");
+    }
+
     private String observeGame(String[] params) throws ResponseException {
         try {
-            clientState.setObservingGameID(getRealGameId(Integer.parseInt(params[0])));
-//            clientState.setUserState(State.IN_GAME);
-            return String.format("observing game: %s\n%s", params[0],PrintBoard.print(
-                    getGameData(Integer.parseInt(params[0])).game(), "observer"));
+            if (params.length != 1) {
+                throw new ResponseException(500, "bad input, expected number");
+            }
+            clientState.setUserState(State.IN_GAME);
+            clientState.setGameID(getRealGameId(Integer.parseInt(params[0])));
+            clientState.setObservingGameID(clientState.getGameID());
+            inGameClient.initializeWebSocket();
+            return String.format("observing game: %s", params[0]);
+            // todo: print out initial game for observe. do it in inGameClient.java?
         } catch (Exception e) {
-            throw new ResponseException(500, "bad input, expected numer");
+            throw new ResponseException(500, "bad input, expected number");
         }
     }
 
