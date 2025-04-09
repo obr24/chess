@@ -40,12 +40,10 @@ public class PreLoginClient {
 
     // todo: remove this function
     public String boardTest() {
-        return new PrintBoard().print(new GameData(999, "whiteUs", "blk", "gme",
-                new ChessGame()), "observer");
+        return new PrintBoard().print(new ChessGame(), "observer");
     }
     public String boardTestBlack() {
-        return new PrintBoard().print(new GameData(999, "whiteUs", "blk", "gme",
-                new ChessGame()), "black");
+        return new PrintBoard().print(new ChessGame(), "black");
     }
     public String login(String... params) throws ResponseException {
         if (params.length == 2) {
@@ -78,7 +76,6 @@ public class PreLoginClient {
     }
 
     public String help() {
-        // todo add in for other clients (like if logged in or not)
         return """
                 Options:
                 Login: "login" <USERNAME> <PASSWORD>
