@@ -40,10 +40,10 @@ public class PreLoginClient {
 
     // todo: remove this function
     public String boardTest() {
-        return new PrintBoard().print(new ChessGame(), "observer");
+        return new PrintBoard().print(new ChessGame(), "observer", null);
     }
     public String boardTestBlack() {
-        return new PrintBoard().print(new ChessGame(), "black");
+        return new PrintBoard().print(new ChessGame(), "black", null);
     }
     public String login(String... params) throws ResponseException {
         if (params.length == 2) {
