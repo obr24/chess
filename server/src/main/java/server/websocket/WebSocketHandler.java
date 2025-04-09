@@ -65,9 +65,9 @@ public class WebSocketHandler {
                         new Gson().toJson(new NotificationMessage(String.format("Observer %s has left", username))));
                 connections.remove(username);
                 return;
-            } else if (gameData.whiteUsername().equals(username)) {
+            } else if (Objects.equals(gameData.whiteUsername(), username)) {
                 gamesDAO.updateGame(WHITE, gameID, null);
-            } else if (gameData.blackUsername().equals(username)) {
+            } else if (Objects.equals(gameData.blackUsername(), username)) {
                 gamesDAO.updateGame(BLACK, gameID, null);
             }
             connections.sendMessageToGameExceptUser(gameID, username,
