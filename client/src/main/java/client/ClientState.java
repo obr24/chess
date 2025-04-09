@@ -7,6 +7,16 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class ClientState {
+    private ChessGame chessGame;
+
+    public ChessGame getChessGame() {
+        return chessGame;
+    }
+
+    public void setChessGame(ChessGame chessGame) {
+        this.chessGame = chessGame;
+    }
+
     public ChessGame.TeamColor getPlayerColor() {
         return playerColor;
     }
@@ -16,6 +26,7 @@ public class ClientState {
     }
 
     private ChessGame.TeamColor playerColor;
+
     public Integer getObservingGameID() {
         return observingGameID;
     }
