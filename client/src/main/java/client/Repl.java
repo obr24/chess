@@ -11,6 +11,7 @@ import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
+import java.util.Objects;
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
@@ -92,7 +93,11 @@ public class Repl implements NotificationHandler {
 
     private void handleLoadGame(LoadGameMessage message) {
         clientState.setChessGame(message.getGame());
-        System.out.println("\n" + PrintBoard.print(clientState.getChessGame(), clientState.getPlayerColor().toString()));
+        String colorString = "observer";
+        if (!Objects.equals(clientState.getPlayerColor(), null)) {
+            colorString = clientState.getPlayerColor().toString();
+        }
+        System.out.println("\n" + PrintBoard.print(clientState.getChessGame(), colorString, null));
         printPrompt();
     }
 
