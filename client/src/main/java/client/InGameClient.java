@@ -3,22 +3,18 @@ package client;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
-import client.websocket.NotificationHandler;
 import client.websocket.WebSocketFacade;
 import exception.ResponseException;
 import ui.PrintBoard;
-import websocket.messages.NotificationMessage;
-import websocket.messages.ServerMessage;
 
 import java.util.Arrays;
-
-import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
+import java.util.Objects;
 
 public class InGameClient {
     private final ServerFacade facade;
     private final WebSocketFacade wsFacade;
     private final ClientState clientState;
-    private boolean WebSocketInitialized = false;
+    private boolean wantsToResign = false;
 
     public InGameClient(WebSocketFacade wsFacade, ServerFacade facade, ClientState clientState) {
         this.facade = facade;
@@ -29,7 +25,6 @@ public class InGameClient {
     public void initializeWebSocket() {
         try {
             wsFacade.connect(clientState.getAuthToken(), clientState.getGameID());
-            WebSocketInitialized = true;
         } catch (ResponseException e) {
             System.out.println("big issue connecting in inGameclient");
             throw new RuntimeException(e);
@@ -41,13 +36,20 @@ public class InGameClient {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            if (wantsToResign) {
+                wantsToResign = false;
+                return switch (cmd) {
+                    case "y" -> acutallyResign();
+                    default -> "not resigning.";
+                };
+            }
             return switch (cmd) {
                 case "help" -> help();
                 case "redraw" -> redraw();
                 case "leave" -> leave();
                 case "move" -> move(params);
                 case "resign" -> resign();
-                case "highlight" -> highlight();
+                case "highlight" -> highlight(params);
                 default -> unknownInput();
             };
 //        } catch (ResponseException ex) {
@@ -57,7 +59,11 @@ public class InGameClient {
     }
 
     public String redraw() {
-        return PrintBoard.print(clientState.getChessGame(), clientState.getPlayerColor().toString());
+        String colorString = "observer";
+        if (!Objects.equals(clientState.getPlayerColor(), null)) {
+            colorString = clientState.getPlayerColor().toString();
+        }
+        return PrintBoard.print(clientState.getChessGame(), colorString, null);
     }
 
     public String leave() throws ResponseException {
@@ -74,8 +80,8 @@ public class InGameClient {
         if (params.length < 2 || params.length > 3) {
             throw new ResponseException(500, "Invalid move. try f5 e4 q");
         }
-        ChessPosition startPosition = moveTranslator(params[0]);
-        ChessPosition endPosition = moveTranslator(params[1]);
+        ChessPosition startPosition = positionTranslator(params[0]);
+        ChessPosition endPosition = positionTranslator(params[1]);
         ChessPiece.PieceType promotionPiece = null;
         if (params.length == 3) {
             promotionPiece = pieceTranslator(params[2]);
@@ -102,7 +108,7 @@ public class InGameClient {
         };
     }
 
-    private ChessPosition moveTranslator(String moveString) throws ResponseException {
+    private ChessPosition positionTranslator(String moveString) throws ResponseException {
         char[] chars = moveString.toCharArray();
         if (!(chars.length == 2)) {
             throw new ResponseException(500, "Invalid move. try f5 e4 q");
@@ -117,13 +123,27 @@ public class InGameClient {
     }
 
     public String resign() throws ResponseException {
+        wantsToResign = true;
         // todo add in reset of client state?
-        wsFacade.resign(clientState.getAuthToken(), clientState.getGameID());
-        return "You have resigned from the game.";
+        return "Are you sure you want to resign (y/n)";
     }
 
-    public String highlight() {
-        return "Highlighting legal moves...";
+    public String acutallyResign() throws ResponseException {
+
+        wsFacade.resign(clientState.getAuthToken(), clientState.getGameID());
+        return "Resigning from the game...";
+    }
+
+    public String highlight(String[] params) throws ResponseException {
+        if (params.length != 1) {
+            throw new ResponseException(500, "Invalid argument. try highlight f5");
+        }
+        String positionString = params[0];
+        String colorString = "observer";
+        if (!Objects.equals(clientState.getPlayerColor(), null)) {
+            colorString = clientState.getPlayerColor().toString();
+        }
+        return PrintBoard.print(clientState.getChessGame(), colorString, positionTranslator(positionString));
     }
 
     public String help() {
